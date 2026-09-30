@@ -8,7 +8,9 @@ export class HeaderComponent extends BaseComponent {
   readonly cartLink: Locator = this.page.getByTestId('nav-cart');
   readonly cartQuantity: Locator = this.page.getByTestId('cart-quantity');
   readonly signInLink: Locator = this.page.getByTestId('nav-sign-in');
-  readonly userMenu: Locator = this.page.getByTestId('nav-menu');
+  readonly userMenu: Locator = this.page
+    .getByTestId('nav-menu')
+    .or(this.page.locator('#menu, [data-test="nav-menu"]'));
   readonly navCategories: Locator = this.page.getByTestId('nav-categories');
   readonly navHome: Locator = this.page.getByTestId('nav-home');
   readonly navContact: Locator = this.page.getByTestId('nav-contact');

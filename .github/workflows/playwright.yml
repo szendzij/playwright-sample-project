@@ -69,6 +69,7 @@ jobs:
         run: npm run test:e2e -- --grep-invert @visual
 
       - name: Run Visual ARIA Snapshot Tests
+        if: success() || failure()
         run: npm run test:visual
 
       - name: Upload Playwright Report
@@ -90,3 +91,4 @@ jobs:
           echo "| **Visual Regression** | ARIA Snapshot Trees | :white_check_mark: Completed |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Test run completed in official Playwright Docker container. Download the HTML report from the workflow artifacts above." >> $GITHUB_STEP_SUMMARY
+
