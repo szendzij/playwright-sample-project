@@ -1,0 +1,25 @@
+{
+  "name": "practice-software-testing-playwright",
+  "version": "1.0.0",
+  "description": "Playwright TypeScript E2E, API and Visual testing suite for Practice Software Testing (Toolshop)",
+  "type": "module",
+  "scripts": {
+    "test:all": "playwright test",
+    "test:e2e": "playwright test --project=toolshop-e2e",
+    "test:api": "playwright test --project=toolshop-api",
+    "test:visual": "playwright test --project=toolshop-e2e --grep @visual",
+    "test:visual:update_snapshot": "playwright test --project=toolshop-e2e --grep @visual --update-snapshots",
+    "lint": "eslint .",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.5.0",
+    "@playwright/test": "^1.50.0",
+    "@types/node": "^22.0.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.0.0",
+    "eslint-plugin-playwright": "^2.1.0",
+    "typescript": "^5.7.0"
+  }
+}

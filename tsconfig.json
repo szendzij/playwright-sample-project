@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["./tests/pages/*"],
+      "@components/*": ["./tests/pages/components/*"],
+      "@setup/*": ["./setup/*"],
+      "@data/*": ["./data/*"]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "tests/**/*",
+    "setup/**/*",
+    "data/**/*",
+    "playwright.config.ts"
+  ]
+}
