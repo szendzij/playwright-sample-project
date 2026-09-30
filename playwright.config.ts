@@ -18,6 +18,13 @@ export default defineConfig({
     ['html', { open: 'never' }],
     ['list']
   ],
+  snapshotDir: 'snapshots',
+  snapshotPathTemplate: 'snapshots/aria/{testFileName}-snapshots/{arg}{ext}',
+  expect: {
+    toMatchAriaSnapshot: {
+      pathTemplate: 'snapshots/aria/{testFileName}-snapshots/{arg}{ext}',
+    },
+  },
   use: {
     testIdAttribute: 'data-test',
     trace: 'on-first-retry',

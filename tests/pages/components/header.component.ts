@@ -12,6 +12,7 @@ export class HeaderComponent extends BaseComponent {
   readonly navCategories: Locator = this.page.getByTestId('nav-categories');
   readonly navHome: Locator = this.page.getByTestId('nav-home');
   readonly navContact: Locator = this.page.getByTestId('nav-contact');
+  readonly appHeader: Locator = this.page.locator('app-header');
 
   constructor(page: Page, root: Locator = page.locator('nav.navbar').first()) {
     super(page, root);

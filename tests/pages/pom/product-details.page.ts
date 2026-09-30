@@ -10,6 +10,7 @@ export class ProductDetailsPage extends BasePage {
   readonly addToCartButton: Locator = this.page.getByTestId('add-to-cart');
   readonly addToFavoritesButton: Locator = this.page.getByTestId('add-to-favorites');
   readonly alertMessage: Locator = this.page.locator('div.alert, [role="alert"], [data-test="alert"]');
+  readonly productContainer: Locator = this.page.locator('app-detail');
 
   constructor(page: Page) {
     super(page);
