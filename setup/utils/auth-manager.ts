@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { chromium } from '@playwright/test';
+import { request } from '@playwright/test';
 import { getUserByRole, type UserRole } from '@data/users';
 import { isSessionValid, withSessionLock } from './lock-helper.js';
 
@@ -28,6 +28,8 @@ export function getLockPath(role: UserRole): string {
 
 /**
  * Ensures an authenticated storage state exists for the given user role.
+ * Uses direct API authentication to generate the session state in localStorage,
+ * completely bypassing UI-level Cloudflare bot challenges and avoiding orphan browser processes.
  * Returns the path to the storage state file, or null if role is 'guest'.
  */
 export async function ensureAuthenticatedSession(
@@ -49,44 +51,54 @@ export async function ensureAuthenticatedSession(
   const user = getUserByRole(role);
 
   await withSessionLock(lockPath, sessionPath, async () => {
-    const browser = await chromium.launch({ headless: true });
+    const baseApi = (process.env.API_URL || 'https://api.practicesoftwaretesting.com').replace(/\/+$/, '');
+    const webOrigin = (baseURL || process.env.BASE_URL || 'https://practicesoftwaretesting.com').replace(/\/+$/, '');
+
+    const apiContext = await request.newContext({ baseURL: baseApi });
     try {
-      const context = await browser.newContext();
-      const page = await context.newPage();
+      const response = await apiContext.post('/users/login', {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        data: {
+          email: user.email,
+          password: user.password,
+        },
+      });
 
-      const base = (baseURL || process.env.BASE_URL || 'https://practicesoftwaretesting.com').replace(/\/+$/, '');
-      const loginUrl = `${base}/auth/login`;
-
-      await page.goto(loginUrl);
-
-      await page.locator('[data-test="email"]').fill(user.email);
-      await page.locator('[data-test="password"]').fill(user.password);
-      await page.locator('[data-test="login-submit"]').click();
-
-      const waitForUrl = page
-        .waitForURL((url) => !url.href.includes('/auth/login'), { timeout: 15_000 })
-        .catch((err) => ({ error: err }));
-      const waitForMenu = page
-        .locator('[data-test="nav-menu"]')
-        .waitFor({ state: 'visible', timeout: 15_000 })
-        .catch((err) => ({ error: err }));
-
-      const firstResult = await Promise.race([waitForUrl, waitForMenu]);
-      if (firstResult && 'error' in firstResult) {
-        const results = await Promise.all([waitForUrl, waitForMenu]);
-        const allFailed = results.every((r) => r && 'error' in r);
-        if (allFailed) {
-          throw new Error(
-            `Authentication failed for role "${role}": neither URL redirect nor nav-menu appeared within 15000ms.`
-          );
-        }
+      if (!response.ok()) {
+        throw new Error(
+          `Authentication failed for role "${role}": ${response.status()} ${await response.text()}`
+        );
       }
 
+      const body = await response.json();
+      const token = body.access_token as string;
+      if (!token) {
+        throw new Error(`Authentication for role "${role}" returned no access_token.`);
+      }
+
+      const storageState = {
+        cookies: [],
+        origins: [
+          {
+            origin: webOrigin,
+            localStorage: [
+              {
+                name: 'auth-token',
+                value: token,
+              },
+            ],
+          },
+        ],
+      };
+
       const tmpPath = `${sessionPath}.tmp`;
-      await context.storageState({ path: tmpPath });
+      fs.writeFileSync(tmpPath, JSON.stringify(storageState, null, 2), 'utf-8');
       fs.renameSync(tmpPath, sessionPath);
     } finally {
-      await browser.close();
+      await apiContext.dispose();
     }
   });
 

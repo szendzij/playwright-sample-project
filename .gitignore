@@ -6,3 +6,4 @@ blob-report/
 *.lock
 .env
 .env.*.local
+.vscode/
