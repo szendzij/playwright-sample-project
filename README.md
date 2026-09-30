@@ -1,8 +1,8 @@
 # 🛠️ Practice Software Testing — Playwright Enterprise Automation Suite
 
-[![Playwright](https://img.shields.io/badge/Playwright-v1.63+-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Playwright](https://img.shields.io/badge/Playwright-v1.50+-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-v5.7+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-v22+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-v20+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![CI Workflow](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
@@ -15,9 +15,9 @@
 - [Overview](#-overview)
 - [Architecture & Key Design Patterns](#-architecture--key-design-patterns)
   - [Dual-Tier Test Runners](#1-dual-tier-test-runners)
-  - [Direct API Session Authentication & Bot Immunity](#2-direct-api-session-authentication--bot-immunity)
+  - [Concurrency Lockfile & Session State Management](#2-concurrency-lockfile--session-state-management)
   - [Page Component Object Model (PCOM)](#3-page-component-object-model-pcom)
-  - [Semantic Visual Regression via Resilient ARIA Snapshots](#4-semantic-visual-regression-via-resilient-aria-snapshots)
+  - [Semantic Visual Regression via ARIA Snapshots](#4-semantic-visual-regression-via-aria-snapshots)
   - [Hybrid API Seeding & Fixtures](#5-hybrid-api-seeding--fixtures)
   - [Modern Protocol Testing (GraphQL & RFC 10008 QUERY)](#6-modern-protocol-testing-graphql--rfc-10008-query)
   - [Synthetic Dynamic Data Generation](#7-synthetic-dynamic-data-generation)
@@ -49,7 +49,7 @@ This repository demonstrates modern automated quality engineering principles for
 │     toolshop-e2e Project        │         │     toolshop-api Project        │
 │  - Browser UI Automation        │         │  - Pure HTTP Client (Headless)  │
 │  - ARIA Visual Tree Regression  │         │  - REST, GraphQL & RFC 10008    │
-│  - Instant API Storage State    │         │  - Sub-second Isolated Workers  │
+│  - Lazy Session State Storage   │         │  - Sub-second Isolated Workers  │
 └─────────────────────────────────┘         └─────────────────────────────────┘
 ```
 
@@ -58,15 +58,14 @@ This repository demonstrates modern automated quality engineering principles for
 ## 🏛️ Architecture & Key Design Patterns
 
 ### 1. Dual-Tier Test Runners
-The test suite utilizes a decoupled project architecture defined in [`playwright.config.ts`](playwright.config.ts):
-- **`toolshop-e2e`**: Executes in real browser contexts (Chromium, 1920x1080) for full user journey and accessibility snapshot validation, with `--disable-blink-features=AutomationControlled` to eliminate bot detection false-positives.
+The test suite utilizes a decoupled project architecture defined in [`playwright.config.ts`](file:///c:/Users/szend/Documents/Bitbucket/practice-software-testing-playwright/playwright.config.ts):
+- **`toolshop-e2e`**: Executes in real browser contexts (Chromium, 1920x1080) for full user journey and accessibility snapshot validation.
 - **`toolshop-api`**: Pure HTTP API runner bypassing browser initialization overhead, executing REST, GraphQL, and experimental RFC tests in milliseconds.
 
-### 2. Direct API Session Authentication & Bot Immunity
-Parallel workers authenticate instantly without UI friction, race conditions, or bot protection blockers:
-- Authentication sessions are cached on disk under `setup/session-storage/.auth/` as reusable storage states (`customer.json`, `admin.json`).
-- Instead of launching a slow headless browser to submit HTML login forms (which triggers Cloudflare Bot Management / Managed Challenge on datacenter IPs like GitHub Actions), [`setup/utils/auth-manager.ts`](setup/utils/auth-manager.ts) authenticates directly via `POST /users/login` and constructs the Playwright `storageState` with `auth-token` in `localStorage`.
-- Generation takes **~200 ms** (vs 15–30s in browser), runs cleanly across parallel workers coordinated by an atomic lock (`setup/utils/lock-helper.ts`), and creates **zero orphan browser processes**.
+### 2. Concurrency Lockfile & Session State Management
+Parallel workers authenticate without encountering race conditions or redundant login calls:
+- Authentication sessions are cached to disk under `setup/session-storage/.auth/` as reusable storage states (`customer.json`, `admin.json`).
+- When a session requires re-authentication, an atomic file lock (`setup/utils/lock-helper.ts`) coordinates worker access, ensuring only one worker logs in while other workers await the fresh session state.
 
 ### 3. Page Component Object Model (PCOM)
 To prevent bloated, monolithic Page Objects, the UI architecture divides interfaces into reusable widgets and orchestrating pages:
@@ -78,11 +77,10 @@ To prevent bloated, monolithic Page Objects, the UI architecture divides interfa
   - `ProductCardComponent`: Scoped product card representations and interactions.
 - **Page Objects**: `HomePage`, `ProductDetailsPage`, `CartPage`, `CheckoutPage`, `LoginPage`, `RegisterPage`, `ContactPage`, `AdminDashboardPage`.
 
-### 4. Semantic Visual Regression via Resilient ARIA Snapshots
+### 4. Semantic Visual Regression via ARIA Snapshots
 Traditional pixel-comparison visual testing suffers from anti-aliasing variations, platform font differences, and rendering engine nuances. This suite uses **Playwright ARIA Snapshots** (`expect(locator).toMatchAriaSnapshot()`):
 - Snapshots are stored as clean, human-readable YAML accessibility trees in `snapshots/aria/`.
 - Tests verify semantic document structure, headings, landmarks, accessible names, and interactive states without false positives.
-- **Dynamic Data Resilience**: Snapshot patterns leverage regular expressions (e.g., regex-based product URLs `/\/product\/[0-9A-Z]+/`, dynamic brand names, and unquoted price/CO₂ patterns), ensuring snapshots remain rock-solid even when backend databases reset or assign dynamic ULIDs.
 
 ### 5. Hybrid API Seeding & Fixtures
 Specs require isolated, predictable states. The suite implements typed domain helpers:
@@ -105,16 +103,16 @@ All mutating operations (user registrations, checkout transactions, contact form
 ## 📁 Repository Structure
 
 ```plaintext
-playwright-sample-project/
+practice-software-testing-playwright/
 ├── .github/
 │   └── workflows/
-│       └── test.yml                  # GitHub Actions CI workflow (Node 22 LTS, actions v6)
+│       └── test.yml                  # Multi-job CI pipeline (lint, api, e2e, visual)
 ├── data/
 │   ├── fixtures/
 │   │   └── sample-attachment.txt     # Test attachment for contact form upload
 │   ├── products.ts                   # Static reference product constants
 │   ├── test-data.ts                  # Faker dynamic test data factories
-│   └── users.ts                      # Role-based test users (admin, customer, guest)
+│   └── users.ts                      # Role-based test users (admin, customer)
 ├── env/
 │   ├── .env.local                    # Local Docker environment configuration
 │   └── .env.prod                     # Live cloud production configuration
@@ -126,8 +124,8 @@ playwright-sample-project/
 │   ├── session-storage/
 │   │   └── .auth/                    # Cached Playwright storage states (.gitignore)
 │   └── utils/
-│       ├── auth-manager.ts           # Fast API-based session state generator
-│       └── lock-helper.ts            # Concurrency-safe file lock & JWT validity validator
+│       ├── auth-manager.ts           # Browser session generator
+│       └── lock-helper.ts            # Concurrency-safe file lock mechanism
 ├── snapshots/
 │   └── aria/                         # Git-tracked ARIA snapshot YAML baseline files
 ├── tests/
@@ -153,15 +151,15 @@ playwright-sample-project/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js**: `22.x` (LTS) or newer recommended
+- **Node.js**: `20.x` or newer recommended
 - **npm**: `10.x` or newer
 
 ### Installation
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/szendzij/playwright-sample-project.git
-   cd playwright-sample-project
+   git clone https://github.com/<your-username>/practice-software-testing-playwright.git
+   cd practice-software-testing-playwright
    ```
 
 2. **Install dependencies**:
@@ -212,9 +210,6 @@ npx playwright test tests/spec/e2e/checkout/checkout.spec.ts
 # Run tests matching a grep tag
 npx playwright test --grep "@visual"
 
-# Run tests excluding visual regression
-npx playwright test --project=toolshop-e2e --grep-invert @visual
-
 # Run tests in headed browser mode
 npx playwright test --headed --project=toolshop-e2e
 
@@ -226,7 +221,7 @@ npx playwright test --ui
 
 ## 🔄 Continuous Integration (CI/CD)
 
-The GitHub Actions CI pipeline ([`.github/workflows/test.yml`](.github/workflows/test.yml)) provides automated validation for every push and pull request:
+The GitHub Actions CI pipeline ([`.github/workflows/test.yml`](file:///c:/Users/szend/Documents/Bitbucket/practice-software-testing-playwright/.github/workflows/test.yml)) provides automated validation for every push and pull request:
 
 ```mermaid
 flowchart TD
@@ -237,10 +232,9 @@ flowchart TD
     D --> F[Generate GitHub Step Summary]
 ```
 
-- **Runtime & Actions**: Fully updated to **Node.js 22 LTS** and `actions/*@v6` (preventing legacy Node 20 runner deprecation warnings).
 - **Stage 1 (`lint-and-typecheck`)**: Fast TypeScript syntax & type verification (`npx tsc --noEmit`).
 - **Stage 2 (`api-tests`)**: Runs pure HTTP tests in parallel, requiring no browser binaries.
-- **Stage 3 (`e2e-and-visual-tests`)**: Installs Chromium with OS dependencies, executes browser user journeys (`--grep-invert @visual`) and dedicated ARIA snapshot checks (`npm run test:visual`).
+- **Stage 3 (`e2e-and-visual-tests`)**: Installs Chromium with OS dependencies, executes browser user journeys and ARIA snapshot checks.
 - **Artifacts**: Playwright HTML report uploaded automatically with 30-day retention.
 - **Step Summary**: Summarized pass/fail results directly visible on the GitHub Actions workflow overview.
 
