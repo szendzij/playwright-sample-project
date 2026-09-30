@@ -39,25 +39,25 @@
 - separator
 - heading "Related products" [level=2]
 - link "Pliers Pliers More information":
-  - /url: /product/01M3SYEQP24TMYMGG6DCZ572G6
+  - /url: /product\/[0-9A-Z]+/
   - img "Pliers"
   - heading "Pliers" [level=5]
   - link "More information":
     - /url: "#"
 - link "Bolt Cutters Bolt Cutters More information":
-  - /url: /product/01M3SYEQP8S2M8EY9BAABQ1RMV
+  - /url: /product\/[0-9A-Z]+/
   - img "Bolt Cutters"
   - heading "Bolt Cutters" [level=5]
   - link "More information":
     - /url: "#"
 - link "Long Nose Pliers Long Nose Pliers More information":
-  - /url: /product/01M3SYEQPC07C19X2NHD91DZNV
+  - /url: /product\/[0-9A-Z]+/
   - img "Long Nose Pliers"
   - heading "Long Nose Pliers" [level=5]
   - link "More information":
     - /url: "#"
 - link "Slip Joint Pliers Slip Joint Pliers More information":
-  - /url: /product/01M3SYEQPMYRJ04TTQ0439A85A
+  - /url: /product\/[0-9A-Z]+/
   - img "Slip Joint Pliers"
   - heading "Slip Joint Pliers" [level=5]
   - link "More information":

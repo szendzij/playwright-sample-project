@@ -74,8 +74,6 @@
 - heading "By brand:" [level=4]
 - group "Brands":
   - text: ""
-  - checkbox /Maicon Exclusao \d+/
-  - text: /Maicon Exclusao \d+/
   - checkbox "ForgeFlex Tools"
   - text: ForgeFlex Tools
   - checkbox "MightyCraft Hardware"
