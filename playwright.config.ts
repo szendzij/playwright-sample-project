@@ -27,7 +27,7 @@ export default defineConfig({
     {
       name: 'toolshop-e2e',
       testDir: './tests/spec',
-      testIgnore: ['**/spec/api/**', '**/api/**'],
+      testIgnore: ['**/spec/api/**', '**/api/**', '**/sanity/**'],
       use: {
         ...devices['Desktop Chrome'],
         baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
@@ -37,7 +37,8 @@ export default defineConfig({
     },
     {
       name: 'toolshop-api',
-      testDir: './tests/spec/api',
+      testDir: './tests/spec',
+      testMatch: ['**/spec/api/**', '**/api/**', '**/sanity/**'],
       use: {
         baseURL: process.env.API_URL || 'https://api.practicesoftwaretesting.com',
       },
