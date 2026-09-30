@@ -1,7 +1,7 @@
 import { test, expect } from '@pages/base';
 
-test.describe('Szczegóły produktu — testy wizualne ARIA', { tag: ['@visual'] }, () => {
-  test('weryfikacja ARIA snapshot widoku szczegółów produktu', async ({
+test.describe('Product Details — ARIA Visual Regression', { tag: ['@visual'] }, () => {
+  test('verify ARIA snapshot of product details view', async ({
     homePage,
     productDetailsPage,
   }) => {

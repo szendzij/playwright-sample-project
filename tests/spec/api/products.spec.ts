@@ -1,7 +1,7 @@
 import { test, expect } from '../../../setup/api/fixtures.js';
 
-test.describe('API Produkty', () => {
-  test('pobieranie listy produktów z paginacją', async ({ productHelper }) => {
+test.describe('API Products', () => {
+  test('retrieve product list with pagination', async ({ productHelper }) => {
     const response = await productHelper.getProductsResponse({ page: 1 });
     expect(response.status()).toBe(200);
 
@@ -18,7 +18,7 @@ test.describe('API Produkty', () => {
     expect(firstProduct).toHaveProperty('price');
   });
 
-  test('wyszukiwanie produktu po frazie Drill', async ({ productHelper }) => {
+  test('search product by phrase Drill', async ({ productHelper }) => {
     const query = 'Drill';
     const response = await productHelper.searchProductsResponse(query);
     expect(response.status()).toBe(200);

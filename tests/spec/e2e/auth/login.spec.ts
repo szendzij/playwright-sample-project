@@ -1,8 +1,8 @@
 import { test, expect } from '@pages/base';
 import { getUserByRole } from '@data/users';
 
-test.describe('E2E — Autentykacja: Logowanie', () => {
-  test('klient loguje się poprawnie danymi testowymi', async ({ page, loginPage, header, accountPage }) => {
+test.describe('E2E — Authentication: Login', () => {
+  test('customer logs in successfully with test credentials', async ({ page, loginPage, header, accountPage }) => {
     const customer = getUserByRole('customer');
 
     await loginPage.open();
@@ -13,7 +13,7 @@ test.describe('E2E — Autentykacja: Logowanie', () => {
     await expect(page).toHaveURL(/.*\/account/);
   });
 
-  test('logowanie z nieprawidłowym hasłem wyświetla komunikat błędu', async ({ loginPage }) => {
+  test('login with invalid password displays error message', async ({ loginPage }) => {
     const customer = getUserByRole('customer');
 
     await loginPage.open();

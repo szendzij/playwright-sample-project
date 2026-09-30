@@ -1,10 +1,10 @@
 import { test, expect } from '@pages/base';
 import { generateCheckoutAddress } from '@data/test-data';
 
-test.describe('E2E — Koszyk i Zamówienie', () => {
+test.describe('E2E — Cart and Checkout', () => {
   test.use({ userRole: 'customer' });
 
-  test('pełny proces zakupowy od katalogu do potwierdzenia zamówienia i faktury', async ({
+  test('full checkout flow from catalog to order confirmation and invoice', async ({
     homePage,
     productDetailsPage,
     header,

@@ -1,7 +1,7 @@
 import { test, expect } from '../../../setup/api/fixtures.js';
 
-test.describe('API Faktury', () => {
-  test('pobieranie listy faktur zalogowanego użytkownika', async ({ apiAs, invoiceHelper }) => {
+test.describe('API Invoices', () => {
+  test('retrieve invoice list for logged-in user', async ({ apiAs, invoiceHelper }) => {
     const adminApi = await apiAs('admin');
     const response = await invoiceHelper.getInvoicesResponse(adminApi);
 
@@ -16,7 +16,7 @@ test.describe('API Faktury', () => {
       expect(firstInvoice).toHaveProperty('id');
       expect(firstInvoice).toHaveProperty('invoice_number');
 
-      // Weryfikacja endpointu statusu PDF dla istniejącej faktury
+      // Verify PDF status endpoint for existing invoice
       const pdfStatusRes = await invoiceHelper.checkPdfStatusResponse(adminApi, firstInvoice.id);
       expect([200, 400]).toContain(pdfStatusRes.status());
     }

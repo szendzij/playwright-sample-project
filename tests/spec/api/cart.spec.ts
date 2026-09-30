@@ -1,8 +1,8 @@
 import { test, expect } from '../../../setup/api/fixtures.js';
 
-test.describe('API Koszyk', () => {
-  test('tworzenie koszyka i dodawanie produktu', async ({ cartHelper, productHelper }) => {
-    // 1. Utworzenie koszyka
+test.describe('API Cart', () => {
+  test('create cart and add product', async ({ cartHelper, productHelper }) => {
+    // 1. Create cart
     const createCartResponse = await cartHelper.createCartResponse();
     expect(createCartResponse.status()).toBe(201);
 
@@ -11,17 +11,17 @@ test.describe('API Koszyk', () => {
     const cartId = cart.id;
     expect(typeof cartId).toBe('string');
 
-    // 2. Pobranie przykładowego produktu do dodania
+    // 2. Fetch sample product to add
     const productsData = await productHelper.getProducts();
     expect(productsData.data.length).toBeGreaterThan(0);
     const targetProduct = productsData.data[0];
     const quantity = 2;
 
-    // 3. Dodanie produktu do koszyka
+    // 3. Add product to cart
     const addItemResponse = await cartHelper.addItemToCartResponse(cartId, targetProduct.id, quantity);
     expect(addItemResponse.status()).toBe(200);
 
-    // 4. Pobranie zawartości koszyka i weryfikacja
+    // 4. Retrieve cart contents and verify
     const getCartResponse = await cartHelper.getCartResponse(cartId);
     expect(getCartResponse.status()).toBe(200);
 

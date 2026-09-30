@@ -1,9 +1,9 @@
 import { test, expect } from '@pages/base';
 
-test.describe('E2E — Panel Administratora', () => {
+test.describe('E2E — Admin Panel', () => {
   test.use({ userRole: 'admin' });
 
-  test('administrator loguje się i zarządza produktami w panelu admina', async ({
+  test('admin logs in and manages products in the admin panel', async ({
     adminDashboardPage,
   }) => {
     await adminDashboardPage.open();

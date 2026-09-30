@@ -7,8 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const fixtureFile = path.resolve(__dirname, '../../../../data/fixtures/sample-attachment.txt');
 
-test.describe('E2E — Kontakt', () => {
-  test('wysłanie formularza kontaktowego z załącznikiem pliku', async ({ contactPage }) => {
+test.describe('E2E — Contact', () => {
+  test('submit contact form with file attachment', async ({ contactPage }) => {
     const contactMessage = generateContactMessage({
       subject: 'Customer service',
       message: 'This is an automated test message regarding toolshop order inquiry with attachment.',

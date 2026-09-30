@@ -1,8 +1,8 @@
 import { test, expect } from '@pages/base';
 import { PRODUCT_BRANDS } from '@data/products';
 
-test.describe('E2E — Katalog: Wyszukiwanie i Filtrowanie', () => {
-  test('wyszukiwanie produktów po słowie kluczowym', async ({ page, homePage, header }) => {
+test.describe('E2E — Catalog: Search and Filter', () => {
+  test('search products by keyword', async ({ page, homePage, header }) => {
     await homePage.open();
 
     const initialCount = await homePage.getProductCount();
@@ -27,7 +27,7 @@ test.describe('E2E — Katalog: Wyszukiwanie i Filtrowanie', () => {
     }
   });
 
-  test('filtrowanie produktów po marce', async ({ page, homePage, filterSidebar }) => {
+  test('filter products by brand', async ({ page, homePage, filterSidebar }) => {
     await homePage.open();
 
     const brandToSelect = PRODUCT_BRANDS[0]; // 'ForgeFlex Tools'

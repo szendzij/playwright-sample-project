@@ -1,8 +1,8 @@
 import { test, expect } from '@pages/base';
 import { generateCustomerData } from '@data/test-data';
 
-test.describe('E2E — Autentykacja: Rejestracja', () => {
-  test('nowy użytkownik może się zarejestrować z dynamicznymi danymi Faker', async ({
+test.describe('E2E — Authentication: Registration', () => {
+  test('new user can register with dynamic Faker data', async ({
     page,
     registerPage,
   }) => {

@@ -1,7 +1,7 @@
 import { test, expect } from '../../../setup/api/fixtures.js';
 
 test.describe('API GraphQL', () => {
-  test('wykonanie zapytania GraphQL o listę produktów', async ({ apiGuest }) => {
+  test('execute GraphQL query for product list', async ({ apiGuest }) => {
     const graphqlQuery = {
       query: `
         query GetProducts {

@@ -1,11 +1,11 @@
 import { test, expect } from '../../../setup/api/fixtures.js';
 
 test.describe('API HTTP QUERY (RFC 10008)', () => {
-  test('wyszukiwanie produktów z użyciem metody HTTP QUERY (RFC 10008) lub fallbacku search', async ({
+  test('search products using HTTP QUERY method (RFC 10008) or search fallback', async ({
     apiGuest,
     productHelper,
   }) => {
-    // Zapytanie metodą HTTP QUERY (RFC 10008)
+    // Request using HTTP QUERY method (RFC 10008)
     const queryResponse = await apiGuest.fetch('/products', {
       method: 'QUERY',
       data: { query: 'Hammer' },
@@ -20,7 +20,7 @@ test.describe('API HTTP QUERY (RFC 10008)', () => {
       expect(body.data.length).toBeGreaterThan(0);
       expect(body).toHaveProperty('current_page');
     } else {
-      // Fallback do standardowego endpointu wyszukiwania przy braku wsparcia dla QUERY
+      // Fallback to standard search endpoint when QUERY is not supported
       const fallbackResponse = await productHelper.searchProductsResponse('Hammer');
       expect(fallbackResponse.status()).toBe(200);
 

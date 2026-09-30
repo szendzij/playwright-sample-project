@@ -2,8 +2,8 @@ import { test, expect } from '../../../setup/api/fixtures.js';
 import { getUserByRole } from '../../../data/users.js';
 import { faker } from '@faker-js/faker';
 
-test.describe('API Autentykacja', () => {
-  test('użytkownik loguje się przez API z prawidłowymi danymi', async ({ authHelper }) => {
+test.describe('API Authentication', () => {
+  test('user logs in via API with valid credentials', async ({ authHelper }) => {
     const customer = getUserByRole('customer');
     const response = await authHelper.loginResponse({
       email: customer.email,
@@ -18,7 +18,7 @@ test.describe('API Autentykacja', () => {
     expect(body.token_type?.toLowerCase()).toBe('bearer');
   });
 
-  test('logowanie z błędnym hasłem zwraca 401 Unauthorized', async ({ authHelper }) => {
+  test('login with invalid password returns 401 Unauthorized', async ({ authHelper }) => {
     const customer = getUserByRole('customer');
     const response = await authHelper.loginResponse({
       email: customer.email,
@@ -28,7 +28,7 @@ test.describe('API Autentykacja', () => {
     expect(response.status()).toBe(401);
   });
 
-  test('rejestracja nowego klienta z unikalnym e-mailem Faker', async ({ authHelper }) => {
+  test('register new customer with unique Faker email', async ({ authHelper }) => {
     const uniqueEmail = `test_customer_${Date.now()}_${faker.string.alphanumeric(6).toLowerCase()}@example.com`;
     const newCustomer = {
       first_name: faker.person.firstName(),
