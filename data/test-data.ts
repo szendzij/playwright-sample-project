@@ -52,13 +52,13 @@ export function generateCustomerData(overrides?: Partial<CustomerData>): Custome
     last_name: faker.person.lastName(),
     dob: formatDateToIsoDateOnly(birthdate),
     address: faker.location.streetAddress(),
-    postcode: faker.location.zipCode(),
+    postcode: '00-001',
     city: faker.location.city(),
     state: faker.location.state(),
-    country: faker.location.country(),
-    phone: faker.phone.number(),
-    email: faker.internet.email().toLowerCase(),
-    password: 'TestPass123!',
+    country: 'Poland',
+    phone: faker.string.numeric(10),
+    email: `customer_${Date.now()}_${faker.string.alphanumeric(6).toLowerCase()}@example.com`,
+    password: `P@ss_${Date.now()}_${faker.string.alphanumeric(8)}!Aa`,
     ...overrides,
   };
 }

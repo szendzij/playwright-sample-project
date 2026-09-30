@@ -56,7 +56,16 @@ export class AdminDashboardPage extends BasePage {
    * Navigates to Products management view.
    */
   async openProducts(): Promise<void> {
-    await this.navProducts.click();
+    const isVisible = await this.navProducts.isVisible().catch(() => false);
+    if (!isVisible) {
+      await this.page.getByTestId('nav-menu').click();
+      await this.navProducts.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+    }
+    if (await this.navProducts.isVisible().catch(() => false)) {
+      await this.navProducts.click();
+    } else {
+      await this.goto('/admin/products');
+    }
     await this.productsTableRows.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   }
 

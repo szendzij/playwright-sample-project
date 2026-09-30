@@ -35,6 +35,29 @@ export function isSessionValid(
       return false;
     }
 
+    if (Array.isArray(parsed.origins)) {
+      for (const origin of parsed.origins) {
+        if (Array.isArray(origin.localStorage)) {
+          const tokenItem = origin.localStorage.find(
+            (item: any) => item.name === 'auth-token' || item.name === 'token'
+          );
+          if (tokenItem && typeof tokenItem.value === 'string') {
+            try {
+              const parts = tokenItem.value.split('.');
+              if (parts.length === 3) {
+                const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+                if (payload.exp && Date.now() / 1000 >= payload.exp - 30) {
+                  return false;
+                }
+              }
+            } catch {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
     return true;
   } catch {
     return false;

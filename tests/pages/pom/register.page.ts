@@ -6,8 +6,15 @@ export class RegisterPage extends BasePage {
   readonly firstNameInput: Locator = this.page.getByTestId('first-name');
   readonly lastNameInput: Locator = this.page.getByTestId('last-name');
   readonly dobInput: Locator = this.page.getByTestId('dob');
-  readonly addressInput: Locator = this.page.getByTestId('address');
-  readonly postcodeInput: Locator = this.page.getByTestId('postcode');
+  readonly addressInput: Locator = this.page
+    .getByTestId('street')
+    .or(this.page.getByTestId('address'));
+  readonly houseNumberInput: Locator = this.page
+    .getByTestId('house_number')
+    .or(this.page.getByTestId('house-number'));
+  readonly postcodeInput: Locator = this.page
+    .getByTestId('postal_code')
+    .or(this.page.getByTestId('postcode'));
   readonly cityInput: Locator = this.page.getByTestId('city');
   readonly stateInput: Locator = this.page.getByTestId('state');
   readonly countrySelect: Locator = this.page.getByTestId('country');
@@ -49,24 +56,28 @@ export class RegisterPage extends BasePage {
     if (customerData.dob) {
       await this.dobInput.fill(customerData.dob);
     }
-    if (customerData.address) {
-      await this.addressInput.fill(customerData.address);
-    }
-    if (customerData.postcode) {
-      await this.postcodeInput.fill(customerData.postcode);
-    }
-    if (customerData.city) {
-      await this.cityInput.fill(customerData.city);
-    }
-    if (customerData.state) {
-      await this.stateInput.fill(customerData.state);
-    }
     if (customerData.country) {
       try {
         await this.countrySelect.selectOption({ label: customerData.country });
       } catch {
         await this.countrySelect.selectOption({ value: customerData.country });
       }
+    }
+    if (customerData.postcode) {
+      await this.postcodeInput.fill(customerData.postcode);
+    }
+    if (await this.houseNumberInput.isVisible().catch(() => false)) {
+      const houseNumber = (customerData as any).house_number || (customerData as any).houseNumber || '42';
+      await this.houseNumberInput.fill(houseNumber);
+    }
+    if (customerData.address) {
+      await this.addressInput.fill(customerData.address);
+    }
+    if (customerData.city) {
+      await this.cityInput.fill(customerData.city);
+    }
+    if (customerData.state) {
+      await this.stateInput.fill(customerData.state);
     }
     if (customerData.phone) {
       await this.phoneInput.fill(customerData.phone);
