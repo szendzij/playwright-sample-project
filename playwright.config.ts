@@ -16,7 +16,8 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   reporter: [
     ['html', { open: 'never' }],
-    ['list']
+    ['list'],
+    ['json', { outputFile: 'test-results/results.json' }]
   ],
   snapshotDir: 'snapshots',
   snapshotPathTemplate: 'snapshots/aria/{testFileName}-snapshots/{arg}{ext}',
