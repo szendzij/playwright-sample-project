@@ -106,7 +106,7 @@ All mutating operations (user registrations, checkout transactions, contact form
 practice-software-testing-playwright/
 ├── .github/
 │   └── workflows/
-│       └── test.yml                  # Multi-job CI pipeline (lint, api, e2e, visual)
+│       └── playwright.yml            # Multi-job CI pipeline with Playwright Docker (lint, api, e2e, visual)
 ├── data/
 │   ├── fixtures/
 │   │   └── sample-attachment.txt     # Test attachment for contact form upload
@@ -221,20 +221,20 @@ npx playwright test --ui
 
 ## 🔄 Continuous Integration (CI/CD)
 
-The GitHub Actions CI pipeline ([`.github/workflows/test.yml`](file:///c:/Users/szend/Documents/Bitbucket/practice-software-testing-playwright/.github/workflows/test.yml)) provides automated validation for every push and pull request:
+The GitHub Actions CI pipeline ([`.github/workflows/playwright.yml`](.github/workflows/playwright.yml)) provides automated validation for every push and pull request:
 
 ```mermaid
 flowchart TD
     A[Code Push / Pull Request] --> B[Job: Lint & Typecheck]
     B -->|Success| C[Job: API Tests]
-    B -->|Success| D[Job: E2E & Visual Tests]
+    B -->|Success| D["Job: E2E & Visual Tests (Docker)"]
     D --> E[Upload Playwright HTML Report]
     D --> F[Generate GitHub Step Summary]
 ```
 
 - **Stage 1 (`lint-and-typecheck`)**: Fast TypeScript syntax & type verification (`npx tsc --noEmit`).
 - **Stage 2 (`api-tests`)**: Runs pure HTTP tests in parallel, requiring no browser binaries.
-- **Stage 3 (`e2e-and-visual-tests`)**: Installs Chromium with OS dependencies, executes browser user journeys and ARIA snapshot checks.
+- **Stage 3 (`e2e-and-visual-tests`)**: Runs in official Playwright Docker container (`mcr.microsoft.com/playwright`), executing browser user journeys and ARIA snapshot checks with pre-installed browser binaries and system dependencies.
 - **Artifacts**: Playwright HTML report uploaded automatically with 30-day retention.
 - **Step Summary**: Summarized pass/fail results directly visible on the GitHub Actions workflow overview.
 

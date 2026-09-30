@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Playwright CI
 
 on:
   push:
@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node.js 22
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
@@ -37,10 +37,10 @@ jobs:
     needs: lint-and-typecheck
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node.js 22
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
@@ -52,24 +52,18 @@ jobs:
         run: npm run test:api
 
   e2e-and-visual-tests:
-    name: E2E & Visual Tests
+    name: E2E & Visual Tests (Docker)
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
     needs: lint-and-typecheck
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: 'npm'
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Playwright Chromium with system dependencies
-        run: npx playwright install --with-deps chromium
 
       - name: Run E2E Tests
         run: npm run test:e2e -- --grep-invert @visual
@@ -78,7 +72,7 @@ jobs:
         run: npm run test:visual
 
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
@@ -92,7 +86,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Test Suite | Target / Mode | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **E2E Scenarios** | Desktop Chromium (1920x1080) | :white_check_mark: Completed |" >> $GITHUB_STEP_SUMMARY
+          echo "| **E2E Scenarios** | Desktop Chromium (Playwright Docker) | :white_check_mark: Completed |" >> $GITHUB_STEP_SUMMARY
           echo "| **Visual Regression** | ARIA Snapshot Trees | :white_check_mark: Completed |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Test run completed. Download the HTML report from the workflow artifacts above." >> $GITHUB_STEP_SUMMARY
+          echo "Test run completed in official Playwright Docker container. Download the HTML report from the workflow artifacts above." >> $GITHUB_STEP_SUMMARY
