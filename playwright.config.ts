@@ -17,15 +17,15 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI
     ? [
-        ['blob'],
-        ['github'],
-        ['list'],
-      ]
+      ['blob'],
+      ['github'],
+      ['list'],
+    ]
     : [
-        ['html', { open: 'never' }],
-        ['list'],
-        ['json', { outputFile: 'test-results/results.json' }],
-      ],
+      ['html', { open: 'never' }],
+      ['list'],
+      ['json', { outputFile: 'test-results/results.json' }],
+    ],
   snapshotDir: 'snapshots',
   snapshotPathTemplate: 'snapshots/aria/{testFileName}-snapshots/{arg}{ext}',
   expect: {
@@ -37,8 +37,19 @@ export default defineConfig({
     testIdAttribute: 'data-test',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    locale: 'en-US',
+    timezoneId: 'America/New_York',
+    permissions: ['geolocation'],
     launchOptions: {
-      args: ['--disable-blink-features=AutomationControlled'],
+      args: [
+        '--disable-blink-features=AutomationControlled',
+        '--disable-dev-shm-usage',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process'
+      ],       
     },
   },
   projects: [
