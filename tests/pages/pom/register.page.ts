@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base-page.js';
-import { type CustomerData } from '../../../data/test-data.js';
+import { BasePage } from '../base-page.ts';
+import { type CustomerData } from '../../../data/test-data.ts';
 
 export class RegisterPage extends BasePage {
   readonly firstNameInput: Locator = this.page.getByTestId('first-name');

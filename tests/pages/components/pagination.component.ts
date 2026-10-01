@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BaseComponent } from '../base-component.js';
+import { BaseComponent } from '../base-component.ts';
 
 export class PaginationComponent extends BaseComponent {
   readonly prevButton: Locator = this.root

@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/mock/mock-test.js';
+import { test, expect } from '../../fixtures/mock/mock-test.ts';
 
 test.describe('Mock API — Basic Responses (route.fulfill)', () => {
   test('renders catalog with custom mocked products, special characters, and badges', async ({

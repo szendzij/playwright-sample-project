@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/mock/mock-test.js';
+import { test, expect } from '../../fixtures/mock/mock-test.ts';
 
 test.describe('Mock API — Intercept and Modify Responses (route.fetch)', () => {
   test('intercepts live products response and prepends an exclusive promo product', async ({

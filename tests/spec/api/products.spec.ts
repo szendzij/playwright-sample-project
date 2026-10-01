@@ -1,4 +1,4 @@
-import { test, expect } from '../../../setup/api/fixtures.js';
+import { test, expect } from '../../../setup/api/fixtures.ts';
 
 test.describe('API Products', () => {
   test('retrieve product list with pagination', async ({ productHelper }) => {

@@ -1,4 +1,4 @@
-import { test, expect } from '../../../setup/api/fixtures.js';
+import { test, expect } from '../../../setup/api/fixtures.ts';
 
 test.describe('API GraphQL', () => {
   test('execute GraphQL query for product list', async ({ apiGuest }) => {

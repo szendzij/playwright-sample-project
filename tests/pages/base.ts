@@ -1,9 +1,9 @@
 import { test as base, expect } from '@playwright/test';
-import { type UserRole } from '../../data/users.js';
-import { ensureAuthenticatedSession } from '../../setup/utils/auth-manager.js';
-import { HeaderComponent } from './components/header.component.js';
-import { FilterSidebarComponent } from './components/filter-sidebar.component.js';
-import { PaginationComponent } from './components/pagination.component.js';
+import { type UserRole } from '../../data/users.ts';
+import { ensureAuthenticatedSession } from '../../setup/utils/auth-manager.ts';
+import { HeaderComponent } from './components/header.component.ts';
+import { FilterSidebarComponent } from './components/filter-sidebar.component.ts';
+import { PaginationComponent } from './components/pagination.component.ts';
 import {
   HomePage,
   ProductDetailsPage,
@@ -14,7 +14,7 @@ import {
   AccountPage,
   ContactPage,
   AdminDashboardPage,
-} from './pom/index.js';
+} from './pom/index.ts';
 
 export type UiFixtures = {
   userRole: UserRole;
@@ -95,14 +95,14 @@ export const test = base.extend<UiFixtures>({
 });
 
 export { expect };
-export { BasePage } from './base-page.js';
-export { BaseComponent } from './base-component.js';
+export { BasePage } from './base-page.ts';
+export { BaseComponent } from './base-component.ts';
 export {
   HeaderComponent,
   FilterSidebarComponent,
   ProductCardComponent,
   PaginationComponent,
-} from './components/index.js';
+} from './components/index.ts';
 export {
   HomePage,
   ProductDetailsPage,
@@ -116,4 +116,4 @@ export {
   type PaymentMethod,
   type ContactFormData,
   type AdminNewProduct,
-} from './pom/index.js';
+} from './pom/index.ts';

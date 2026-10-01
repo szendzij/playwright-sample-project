@@ -1,11 +1,11 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base-page.js';
+import { BasePage } from '../base-page.ts';
 import {
   HeaderComponent,
   FilterSidebarComponent,
   PaginationComponent,
   ProductCardComponent,
-} from '../components/index.js';
+} from '../components/index.ts';
 
 export class HomePage extends BasePage {
   readonly header: HeaderComponent;

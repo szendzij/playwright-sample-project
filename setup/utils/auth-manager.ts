@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { request } from '@playwright/test';
 import { getUserByRole, type UserRole } from '@data/users';
-import { isSessionValid, withSessionLock } from './lock-helper.js';
+import { isSessionValid, withSessionLock } from './lock-helper.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

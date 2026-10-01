@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base-page.js';
+import { BasePage } from '../base-page.ts';
 
 export interface AdminNewProduct {
   name: string;

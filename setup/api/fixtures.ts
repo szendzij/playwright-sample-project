@@ -1,9 +1,9 @@
 import { test as base, expect, request, type APIRequestContext } from '@playwright/test';
-import { getUserByRole } from '../../data/users.js';
-import { AuthHelper } from './helpers/auth-helper.js';
-import { ProductHelper } from './helpers/product-helper.js';
-import { CartHelper } from './helpers/cart-helper.js';
-import { InvoiceHelper } from './helpers/invoice-helper.js';
+import { getUserByRole } from '../../data/users.ts';
+import { AuthHelper } from './helpers/auth-helper.ts';
+import { ProductHelper } from './helpers/product-helper.ts';
+import { CartHelper } from './helpers/cart-helper.ts';
+import { InvoiceHelper } from './helpers/invoice-helper.ts';
 
 export type ApiWorkerFixtures = {
   tokenCache: Map<string, string>;
@@ -104,7 +104,7 @@ export const test = base.extend<ApiTestFixtures, ApiWorkerFixtures>({
 });
 
 export { expect, request, type APIRequestContext };
-export { AuthHelper } from './helpers/auth-helper.js';
-export { ProductHelper } from './helpers/product-helper.js';
-export { CartHelper } from './helpers/cart-helper.js';
-export { InvoiceHelper } from './helpers/invoice-helper.js';
+export { AuthHelper } from './helpers/auth-helper.ts';
+export { ProductHelper } from './helpers/product-helper.ts';
+export { CartHelper } from './helpers/cart-helper.ts';
+export { InvoiceHelper } from './helpers/invoice-helper.ts';

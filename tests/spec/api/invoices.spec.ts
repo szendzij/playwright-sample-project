@@ -1,4 +1,4 @@
-import { test, expect } from '../../../setup/api/fixtures.js';
+import { test, expect } from '../../../setup/api/fixtures.ts';
 
 test.describe('API Invoices', () => {
   test('retrieve invoice list for logged-in user', async ({ apiAs, invoiceHelper }) => {

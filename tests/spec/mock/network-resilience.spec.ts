@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/mock/mock-test.js';
+import { test, expect } from '../../fixtures/mock/mock-test.ts';
 
 test.describe('Mock API — Network Resilience and Error Handling (route.abort & status codes)', () => {
   test('handles HTTP 500 Internal Server Error during login gracefully', async ({

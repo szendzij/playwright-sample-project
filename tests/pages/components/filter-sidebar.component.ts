@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BaseComponent } from '../base-component.js';
+import { BaseComponent } from '../base-component.ts';
 
 export class FilterSidebarComponent extends BaseComponent {
   readonly searchInput: Locator = this.root.getByTestId('search-query');

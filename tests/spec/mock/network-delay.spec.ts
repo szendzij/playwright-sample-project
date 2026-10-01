@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/mock/mock-test.js';
+import { test, expect } from '../../fixtures/mock/mock-test.ts';
 
 test.describe('Mock API — Artificial Latency & Delay (Testing Async States)', () => {
   test('delays product catalog API response and completes load gracefully', async ({

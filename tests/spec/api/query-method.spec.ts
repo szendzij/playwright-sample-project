@@ -1,4 +1,4 @@
-import { test, expect } from '../../../setup/api/fixtures.js';
+import { test, expect } from '../../../setup/api/fixtures.ts';
 
 test.describe('API HTTP QUERY (RFC 10008)', () => {
   test('search products using HTTP QUERY method (RFC 10008) or search fallback', async ({

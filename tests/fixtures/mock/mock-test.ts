@@ -1,5 +1,5 @@
-import { test as baseTest, expect } from '../../pages/base.js';
-import { ApiMockHelper } from './mock-helper.js';
+import { test as baseTest, expect } from '../../pages/base.ts';
+import { ApiMockHelper } from './mock-helper.ts';
 
 export type MockTestFixtures = {
   mockHelper: ApiMockHelper;

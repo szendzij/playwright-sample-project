@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base-page.js';
+import { BasePage } from '../base-page.ts';
 
 export class AccountPage extends BasePage {
   readonly navProfile: Locator = this.page.getByTestId('nav-profile');

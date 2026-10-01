@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base-page.js';
-import { type ContactMessage } from '../../../data/test-data.js';
+import { BasePage } from '../base-page.ts';
+import { type ContactMessage } from '../../../data/test-data.ts';
 
 export interface ContactFormData {
   firstName?: string;

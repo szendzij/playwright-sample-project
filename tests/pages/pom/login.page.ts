@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { BasePage } from '../base-page.js';
+import { BasePage } from '../base-page.ts';
 
 export class LoginPage extends BasePage {
   readonly emailInput: Locator = this.page.getByTestId('email');
