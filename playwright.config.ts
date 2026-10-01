@@ -13,12 +13,19 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  retryStrategy: 'isolated',
   workers: process.env.CI ? 2 : undefined,
-  reporter: [
-    ['html', { open: 'never' }],
-    ['list'],
-    ['json', { outputFile: 'test-results/results.json' }]
-  ],
+  reporter: process.env.CI
+    ? [
+        ['blob'],
+        ['github'],
+        ['list'],
+      ]
+    : [
+        ['html', { open: 'never' }],
+        ['list'],
+        ['json', { outputFile: 'test-results/results.json' }],
+      ],
   snapshotDir: 'snapshots',
   snapshotPathTemplate: 'snapshots/aria/{testFileName}-snapshots/{arg}{ext}',
   expect: {
