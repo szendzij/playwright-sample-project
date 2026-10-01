@@ -160,7 +160,7 @@ jobs:
           merge-multiple: true
 
       - name: Merge Playwright Reports
-        run: npx playwright merge-reports --reporter=html,json,github all-blob-reports
+        run: npx playwright merge-reports -c playwright.config.ts --reporter=html,json,github all-blob-reports
 
       - name: Upload Merged Playwright Report
         uses: actions/upload-artifact@v4
