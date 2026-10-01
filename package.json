@@ -7,6 +7,7 @@
     "test:all": "playwright test",
     "test:e2e": "playwright test --project=toolshop-e2e",
     "test:api": "playwright test --project=toolshop-api",
+    "test:mock": "playwright test --project=toolshop-mock",
     "test:visual": "playwright test --project=toolshop-e2e --grep @visual",
     "test:visual:update_snapshot": "playwright test --project=toolshop-e2e --grep @visual --update-snapshots",
     "lint": "eslint .",

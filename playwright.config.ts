@@ -38,7 +38,7 @@ export default defineConfig({
     {
       name: 'toolshop-e2e',
       testDir: './tests/spec',
-      testIgnore: ['**/spec/api/**', '**/api/**', '**/sanity/**'],
+      testIgnore: ['**/spec/api/**', '**/api/**', '**/sanity/**', '**/spec/mock/**', '**/mock/**'],
       use: {
         ...devices['Desktop Chrome'],
         baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
@@ -52,6 +52,16 @@ export default defineConfig({
       testMatch: ['**/spec/api/**', '**/api/**', '**/sanity/**'],
       use: {
         baseURL: process.env.API_URL || 'https://api.practicesoftwaretesting.com',
+      },
+    },
+    {
+      name: 'toolshop-mock',
+      testDir: './tests/spec/mock',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
+        browserName: 'chromium',
+        viewport: { width: 1920, height: 1080 },
       },
     },
   ],
