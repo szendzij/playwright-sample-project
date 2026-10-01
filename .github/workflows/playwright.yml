@@ -51,8 +51,41 @@ jobs:
       - name: Run API Tests
         run: npm run test:api
 
-  e2e-and-visual-tests:
-    name: E2E & Visual Tests (Docker)
+      - name: Upload API Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-api
+          path: playwright-report/
+          retention-days: 30
+
+  mock-tests:
+    name: Mock Tests (Docker)
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    needs: lint-and-typecheck
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Mock Tests
+        run: npm run test:mock
+
+      - name: Upload Mock Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-mock
+          path: playwright-report/
+          retention-days: 30
+
+  e2e-tests:
+    name: E2E Tests (Docker)
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.63.0-noble
@@ -68,27 +101,35 @@ jobs:
       - name: Run E2E Tests
         run: npm run test:e2e -- --grep-invert @visual
 
-      - name: Run Visual ARIA Snapshot Tests
-        if: success() || failure()
-        run: npm run test:visual
-
-      - name: Upload Playwright Report
+      - name: Upload E2E Test Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-e2e
           path: playwright-report/
           retention-days: 30
 
-      - name: Generate Job Summary
-        if: always()
-        run: |
-          echo "### 🎭 Playwright Test Execution Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Test Suite | Target / Mode | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **E2E Scenarios** | Desktop Chromium (Playwright Docker) | :white_check_mark: Completed |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Visual Regression** | ARIA Snapshot Trees | :white_check_mark: Completed |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Test run completed in official Playwright Docker container. Download the HTML report from the workflow artifacts above." >> $GITHUB_STEP_SUMMARY
+  visual-tests:
+    name: Visual Tests (Docker)
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    needs: lint-and-typecheck
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Visual ARIA Snapshot Tests
+        run: npm run test:visual
+
+      - name: Upload Visual Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-visual
+          path: playwright-report/
+          retention-days: 30
