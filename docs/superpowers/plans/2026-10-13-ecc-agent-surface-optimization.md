@@ -38,10 +38,10 @@
 - Consumes: Existing files in `.agents/rules/`
 - Produces: Clean `.agents/rules/` containing only TypeScript, Web, and Common standards
 
-- [ ] **Step 1: Create target directory `.agents/library/rules`**
-- [ ] **Step 2: Move off-stack language rules (`angular-*`, `arkts-*`, `cpp-*`, `csharp-*`, `dart-*`, `fsharp-*`, `golang-*`, `java-*`, `kotlin-*`, `nuxt-*`, `perl-*`, `php-*`, `python-*`, `react-*`, `react-native-*`, `ruby-*`, `rust-*`, `swift-*`, `vue-*`) into `.agents/library/rules/`**
-- [ ] **Step 3: Verify `.agents/rules/` contains exactly 22 rule files + README.md**
-- [ ] **Step 4: Commit rule reorganization**
+- [x] **Step 1: Create target directory `.agents/library/rules`**
+- [x] **Step 2: Move off-stack language rules (`angular-*`, `arkts-*`, `cpp-*`, `csharp-*`, `dart-*`, `fsharp-*`, `golang-*`, `java-*`, `kotlin-*`, `nuxt-*`, `perl-*`, `php-*`, `python-*`, `react-*`, `react-native-*`, `ruby-*`, `rust-*`, `swift-*`, `vue-*`) into `.agents/library/rules/`**
+- [x] **Step 3: Verify `.agents/rules/` contains exactly 22 rule files + README.md**
+- [x] **Step 4: Commit rule reorganization**
 ```bash
 git add .agents/rules .agents/library/rules
 git commit -m "chore(agents): relocate off-stack language rules to library"
@@ -60,10 +60,10 @@ git commit -m "chore(agents): relocate off-stack language rules to library"
 - Consumes: Files in `.agents/agents/`
 - Produces: Focused `.agents/agents/` active set
 
-- [ ] **Step 1: Create target directory `.agents/library/agents`**
-- [ ] **Step 2: Move off-stack resolver & reviewer agents (Python, Rust, C++, Go, Java, Flutter, etc.) and niche domain agents (homelab, marketing, healthcare, etc.) to `.agents/library/agents/`**
-- [ ] **Step 3: Verify the remaining 11 daily agents in `.agents/agents/`**
-- [ ] **Step 4: Commit agent reorganization**
+- [x] **Step 1: Create target directory `.agents/library/agents`**
+- [x] **Step 2: Move off-stack resolver & reviewer agents (Python, Rust, C++, Go, Java, Flutter, etc.) and niche domain agents (homelab, marketing, healthcare, etc.) to `.agents/library/agents/`**
+- [x] **Step 3: Verify the remaining 11 daily agents in `.agents/agents/`**
+- [x] **Step 4: Commit agent reorganization**
 ```bash
 git add .agents/agents .agents/library/agents
 git commit -m "chore(agents): trim active agents to daily Playwright and TypeScript stack"
@@ -82,10 +82,10 @@ git commit -m "chore(agents): trim active agents to daily Playwright and TypeScr
 - Consumes: Files in `.agents/workflows/`
 - Produces: Clean `.agents/workflows/` command palette
 
-- [ ] **Step 1: Create target directory `.agents/library/workflows`**
-- [ ] **Step 2: Relocate non-TypeScript/non-Playwright workflow files to `.agents/library/workflows/`**
-- [ ] **Step 3: Verify the remaining 10 daily workflows in `.agents/workflows/`**
-- [ ] **Step 4: Commit workflow reorganization**
+- [x] **Step 1: Create target directory `.agents/library/workflows`**
+- [x] **Step 2: Relocate non-TypeScript/non-Playwright workflow files to `.agents/library/workflows/`**
+- [x] **Step 3: Verify the remaining 10 daily workflows in `.agents/workflows/`**
+- [x] **Step 4: Commit workflow reorganization**
 ```bash
 git add .agents/workflows .agents/library/workflows
 git commit -m "chore(agents): isolate daily test & quality workflows"
@@ -102,9 +102,9 @@ git commit -m "chore(agents): isolate daily test & quality workflows"
 - Consumes: Directory structure of `.agents/library/`
 - Produces: Keyword-searchable index that allows agents and users to locate archived rules, agents, and workflows on demand without loading them continuously
 
-- [ ] **Step 1: Author `.agents/skills/skill-library/SKILL.md` with trigger mappings and directory cross-references**
-- [ ] **Step 2: Verify skill frontmatter and metadata syntax**
-- [ ] **Step 3: Commit skill library router**
+- [x] **Step 1: Author `.agents/skills/skill-library/SKILL.md` with trigger mappings and directory cross-references**
+- [x] **Step 2: Verify skill frontmatter and metadata syntax**
+- [x] **Step 3: Commit skill library router**
 ```bash
 git add .agents/skills/skill-library
 git commit -m "feat(agents): add skill-library router for on-demand reference retrieval"
@@ -121,11 +121,11 @@ git commit -m "feat(agents): add skill-library router for on-demand reference re
 - Consumes: Final file tree in `.agents/`
 - Produces: Verified workspace state, green build, passing API smoke test
 
-- [ ] **Step 1: Update `.agents/ecc-install-state.json` to record the optimized profile**
-- [ ] **Step 2: Run linter: `npm run lint`**
-- [ ] **Step 3: Run TypeScript compiler check: `npx tsc --noEmit`**
-- [ ] **Step 4: Run API test suite: `npm run test:api` to verify zero regression**
-- [ ] **Step 5: Verify git status and commit install state update**
+- [x] **Step 1: Update `.agents/ecc-install-state.json` to record the optimized profile**
+- [x] **Step 2: Run linter: `npm run lint`**
+- [x] **Step 3: Run TypeScript compiler check: `npx tsc --noEmit`**
+- [x] **Step 4: Run API test suite: `npm run test:api` to verify zero regression**
+- [x] **Step 5: Verify git status and commit install state update**
 ```bash
 git add .agents/ecc-install-state.json
 git commit -m "chore(agents): synchronize ECC install state with optimized surface"
