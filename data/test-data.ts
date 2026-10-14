@@ -20,7 +20,20 @@ export interface CheckoutAddress {
   state: string;
   country: string;
   postcode: string;
+  house_number?: string;
+  houseNumber?: string;
 }
+
+/**
+ * Dane rejestracji. Formularz i API przyjmują oba warianty nazw pól
+ * (snake_case oraz camelCase), więc typ dopuszcza oba.
+ */
+export type RegisterInput = Partial<CustomerData> & {
+  firstName?: string;
+  lastName?: string;
+  house_number?: string;
+  houseNumber?: string;
+};
 
 export interface ContactMessage {
   name: string;

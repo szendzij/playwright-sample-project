@@ -1,6 +1,5 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
-import { type ContactMessage } from '../../../data/test-data.ts';
 
 export interface ContactFormData {
   firstName?: string;
@@ -25,9 +24,6 @@ export class ContactPage extends BasePage {
   readonly submitButton: Locator = this.page.getByTestId('contact-submit');
   readonly successAlert: Locator = this.page
     .locator('div.alert-success, [data-test="alert-success"], .alert-success');
-  constructor(page: Page) {
-    super(page);
-  }
 
   /**
    * Navigates to the contact page.
@@ -40,9 +36,7 @@ export class ContactPage extends BasePage {
   /**
    * Fills contact form inputs.
    */
-  async fillForm(contactData: ContactFormData | ContactMessage): Promise<void> {
-    const data = contactData as ContactFormData & { name?: string };
-
+  async fillForm(data: ContactFormData): Promise<void> {
     let first = data.firstName || data.first_name || '';
     let last = data.lastName || data.last_name || '';
 
@@ -91,11 +85,6 @@ export class ContactPage extends BasePage {
    * Returns text content of the success alert banner.
    */
   async getSuccessAlert(): Promise<string> {
-    const isVisible = await this.successAlert.first().isVisible().catch(() => false);
-    if (!isVisible) {
-      return '';
-    }
-    const text = await this.successAlert.first().textContent();
-    return text ? text.trim() : '';
+    return this.visibleText(this.successAlert);
   }
 }

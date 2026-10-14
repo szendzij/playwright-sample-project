@@ -1,6 +1,6 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
-import { type CustomerData } from '../../../data/test-data.ts';
+import { type RegisterInput } from '../../../data/test-data.ts';
 
 export class RegisterPage extends BasePage {
   readonly firstNameInput: Locator = this.page.getByTestId('first-name');
@@ -26,10 +26,6 @@ export class RegisterPage extends BasePage {
     .getByTestId('register-error')
     .or(this.page.locator('.alert-danger, [data-test="register-error"]'));
 
-  constructor(page: Page) {
-    super(page);
-  }
-
   /**
    * Navigates to registration page.
    */
@@ -41,11 +37,9 @@ export class RegisterPage extends BasePage {
   /**
    * Fills all registration form inputs with customer data and clicks register submit button.
    */
-  async register(
-    customerData: CustomerData | (Partial<CustomerData> & { firstName?: string; lastName?: string })
-  ): Promise<void> {
-    const firstName = (customerData as any).firstName || customerData.first_name || '';
-    const lastName = (customerData as any).lastName || customerData.last_name || '';
+  async register(customerData: RegisterInput): Promise<void> {
+    const firstName = customerData.firstName || customerData.first_name || '';
+    const lastName = customerData.lastName || customerData.last_name || '';
 
     if (firstName) {
       await this.firstNameInput.fill(firstName);
@@ -67,7 +61,7 @@ export class RegisterPage extends BasePage {
       await this.postcodeInput.fill(customerData.postcode);
     }
     if (await this.houseNumberInput.isVisible().catch(() => false)) {
-      const houseNumber = (customerData as any).house_number || (customerData as any).houseNumber || '42';
+      const houseNumber = customerData.house_number || customerData.houseNumber || '42';
       await this.houseNumberInput.fill(houseNumber);
     }
     if (customerData.address) {
@@ -96,11 +90,6 @@ export class RegisterPage extends BasePage {
    * Returns error message text if registration failed.
    */
   async getErrorMessage(): Promise<string> {
-    const isVisible = await this.registerError.first().isVisible().catch(() => false);
-    if (!isVisible) {
-      return '';
-    }
-    const text = await this.registerError.first().textContent();
-    return text ? text.trim() : '';
+    return this.visibleText(this.registerError);
   }
 }

@@ -1,6 +1,6 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
-import { type CheckoutAddress, type PaymentDetails } from '../../../data/test-data.ts';
+import { type CheckoutAddress } from '../../../data/test-data.ts';
 
 export type PaymentMethod =
   | 'cash-on-delivery'
@@ -44,10 +44,6 @@ export class CheckoutPage extends BasePage {
     '[data-test="invoice-number"], #order-confirmation, .alert-success'
   );
 
-  constructor(page: Page) {
-    super(page);
-  }
-
   /**
    * Navigates to the checkout page.
    */
@@ -90,7 +86,7 @@ export class CheckoutPage extends BasePage {
       await this.postcodeInput.fill(addressData.postcode);
     }
     if (await this.houseNumberInput.isVisible().catch(() => false)) {
-      const houseNum = (addressData as any).house_number || (addressData as any).houseNumber || '42';
+      const houseNum = addressData.house_number || addressData.houseNumber || '42';
       await this.houseNumberInput.fill(houseNum);
     }
     if (addressData.address) {
@@ -139,11 +135,6 @@ export class CheckoutPage extends BasePage {
    * Returns order success / confirmation message text.
    */
   async getSuccessMessage(): Promise<string> {
-    const isVisible = await this.orderConfirmation.first().isVisible().catch(() => false);
-    if (!isVisible) {
-      return '';
-    }
-    const text = await this.orderConfirmation.first().textContent();
-    return text ? text.trim() : '';
+    return this.visibleText(this.orderConfirmation);
   }
 }

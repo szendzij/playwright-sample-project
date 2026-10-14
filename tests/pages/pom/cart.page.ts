@@ -1,12 +1,9 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
 
 export class CartPage extends BasePage {
   readonly proceed1Button: Locator = this.page.getByTestId('proceed-1');
   readonly itemRows: Locator = this.page.locator('table tbody tr');
-  constructor(page: Page) {
-    super(page);
-  }
 
   /**
    * Navigates to the cart/checkout page.

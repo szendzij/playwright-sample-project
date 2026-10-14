@@ -1,14 +1,10 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
 
 export class ProductDetailsPage extends BasePage {
   readonly productName: Locator = this.page.getByTestId('product-name');
   readonly addToCartButton: Locator = this.page.getByTestId('add-to-cart');
   readonly productContainer: Locator = this.page.locator('app-detail');
-
-  constructor(page: Page) {
-    super(page);
-  }
 
   /**
    * Navigates to a specific product details page by its ID, or waits for page load if already navigated.

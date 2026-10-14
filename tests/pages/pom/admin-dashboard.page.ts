@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
 
 export interface AdminNewProduct {
@@ -16,10 +16,6 @@ export class AdminDashboardPage extends BasePage {
     .getByTestId('product-add')
     .or(this.page.locator('a[href*="/admin/products/add"], [data-test="page-title"] + a'));
   readonly productsTableRows: Locator = this.page.locator('table tbody tr');
-
-  constructor(page: Page) {
-    super(page);
-  }
 
   /**
    * Navigates to admin dashboard.

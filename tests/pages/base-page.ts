@@ -1,4 +1,4 @@
-import { type Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 
 /**
  * Base abstract class for all Page Object Models (POM).
@@ -19,5 +19,16 @@ export abstract class BasePage {
    */
   async waitForLoaded(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  /**
+   * Zwraca przycięty tekst elementu albo '' gdy element nie jest widoczny.
+   */
+  protected async visibleText(locator: Locator): Promise<string> {
+    const first = locator.first();
+    if (!(await first.isVisible().catch(() => false))) {
+      return '';
+    }
+    return ((await first.textContent()) ?? '').trim();
   }
 }
