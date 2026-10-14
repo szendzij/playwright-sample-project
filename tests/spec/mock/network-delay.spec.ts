@@ -9,7 +9,7 @@ test.describe('Mock API — Artificial Latency & Delay (Testing Async States)', 
     const startTime = Date.now();
 
     // 1. Introduce artificial delay on the products endpoint
-    await mockHelper.delayResponse(/\/products(\?.*)?$/, delayMs);
+    await mockHelper.delayResponse(delayMs);
 
     // 2. Open homepage and wait for page to settle
     await homePage.open();

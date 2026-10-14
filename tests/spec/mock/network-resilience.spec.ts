@@ -47,7 +47,7 @@ test.describe('Mock API — Network Resilience and Error Handling (route.abort &
     mockHelper,
   }) => {
     // 1. Simulate hard network failure for login requests
-    await mockHelper.abortRequests('**/users/login', 'failed');
+    await mockHelper.abortRequests('**/users/login');
 
     // 2. Open login page
     await loginPage.open();
