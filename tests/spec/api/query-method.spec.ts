@@ -11,7 +11,9 @@ test.describe('API HTTP QUERY (RFC 10008)', () => {
       },
     });
 
-    test.skip(queryResponse.status() !== 200, 'Backend nie wspiera jeszcze HTTP QUERY (RFC 10008)');
+    // Wsparcie HTTP QUERY jest weryfikowane bezwarunkowo: sonda na żywym API
+    // daje tu 200, więc warunkowy `test.skip` był gałęzią nieosiągalną.
+    expect(queryResponse.status()).toBe(200);
 
     const body = await queryResponse.json();
     expect(Array.isArray(body.data)).toBe(true);
