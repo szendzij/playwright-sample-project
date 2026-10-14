@@ -1,73 +1,79 @@
 import fs from 'fs';
 import path from 'path';
 
-export const SESSION_VALIDITY_HOURS = 0.5;
 export const LOCK_POLL_INTERVAL_MS = 250;
 export const LOCK_MAX_WAIT_MS = 30_000;
+export const LOCK_STALE_MS = 60_000;
+
+/** Wyciąga token z zapisanego storageState (Playwright). */
+function extractAuthToken(parsed: any): string | null {
+  if (!parsed || !Array.isArray(parsed.origins)) {
+    return null;
+  }
+  for (const origin of parsed.origins) {
+    if (!Array.isArray(origin.localStorage)) {
+      continue;
+    }
+    const item = origin.localStorage.find(
+      (entry: any) => entry?.name === 'auth-token' || entry?.name === 'token'
+    );
+    if (item && typeof item.value === 'string') {
+      return item.value;
+    }
+  }
+  return null;
+}
+
+/** Dekoduje payload JWT. Zwraca null, gdy token nie jest poprawnym JWT. */
+function decodeJwtPayload(token: string): { exp?: number } | null {
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    return null;
+  }
+  const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+  const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+  try {
+    return JSON.parse(Buffer.from(padded, 'base64').toString('utf-8'));
+  } catch {
+    return null;
+  }
+}
 
 /**
- * Checks whether an existing session file is still valid.
- * A session is valid if the file exists, was modified within the validity TTL,
- * and contains non-empty valid JSON.
+ * Sesja jest ważna, jeśli plik istnieje, parsuje się do obiektu,
+ * zawiera token i token nie wygasł (z zapasem 30 s).
  */
-export function isSessionValid(
-  sessionPath: string,
-  validityHours: number = SESSION_VALIDITY_HOURS
-): boolean {
+export function isSessionValid(sessionPath: string): boolean {
   try {
     if (!fs.existsSync(sessionPath)) {
       return false;
     }
-
-    const stats = fs.statSync(sessionPath);
-    const fileAgeHours = (Date.now() - stats.mtimeMs) / (1000 * 60 * 60);
-    if (fileAgeHours > validityHours) {
+    const content = fs.readFileSync(sessionPath, 'utf-8').trim();
+    if (!content) {
       return false;
     }
-
-    const content = fs.readFileSync(sessionPath, 'utf-8');
-    if (!content || !content.trim()) {
-      return false;
-    }
-
     const parsed = JSON.parse(content);
     if (typeof parsed !== 'object' || parsed === null) {
       return false;
     }
-
-    if (Array.isArray(parsed.origins)) {
-      for (const origin of parsed.origins) {
-        if (Array.isArray(origin.localStorage)) {
-          const tokenItem = origin.localStorage.find(
-            (item: any) => item.name === 'auth-token' || item.name === 'token'
-          );
-          if (tokenItem && typeof tokenItem.value === 'string') {
-            try {
-              const parts = tokenItem.value.split('.');
-              if (parts.length === 3) {
-                const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-                if (payload.exp && Date.now() / 1000 >= payload.exp - 30) {
-                  return false;
-                }
-              }
-            } catch {
-              return false;
-            }
-          }
-        }
-      }
+    const token = extractAuthToken(parsed);
+    if (!token) {
+      return false;
     }
-
-    return true;
+    const payload = decodeJwtPayload(token);
+    if (!payload) {
+      return false;
+    }
+    return !payload.exp || Date.now() / 1000 < payload.exp - 30;
   } catch {
     return false;
   }
 }
 
 /**
- * Executes a function under a file-based lock.
- * If the lock exists, waits up to LOCK_MAX_WAIT_MS.
- * Once released, if the session is already valid, returns early without re-executing fn().
+ * Wykonuje fn() pod file-lockiem. Czeka gdy lock istnieje (max LOCK_MAX_WAIT_MS),
+ * a lock starszy niż LOCK_STALE_MS uznaje za osierocony i przejmuje.
+ * Po zwolnieniu locka: jeśli sesja już jest ważna, zwraca bez ponownego fn().
  */
 export async function withSessionLock(
   lockPath: string,
@@ -78,25 +84,28 @@ export async function withSessionLock(
   let waited = false;
 
   while (fs.existsSync(lockPath)) {
+    const ageMs = Date.now() - fs.statSync(lockPath).mtimeMs;
+    if (ageMs > LOCK_STALE_MS) {
+      // Proces trzymający lock padł — odzyskaj go.
+      try {
+        fs.unlinkSync(lockPath);
+      } catch {
+        // ignoruj, ktoś inny mógł już usunąć
+      }
+      break;
+    }
     waited = true;
     if (Date.now() - startTime >= LOCK_MAX_WAIT_MS) {
-      throw new Error(
-        `Timeout waiting for lockfile "${lockPath}" after ${LOCK_MAX_WAIT_MS}ms`
-      );
+      throw new Error(`Timeout waiting for lockfile "${lockPath}" after ${LOCK_MAX_WAIT_MS}ms`);
     }
     await new Promise((resolve) => setTimeout(resolve, LOCK_POLL_INTERVAL_MS));
   }
 
-  // When released, if session became valid, return early without re-executing fn()
   if (waited && isSessionValid(sessionPath)) {
     return;
   }
 
-  const lockDir = path.dirname(lockPath);
-  if (!fs.existsSync(lockDir)) {
-    fs.mkdirSync(lockDir, { recursive: true });
-  }
-
+  fs.mkdirSync(path.dirname(lockPath), { recursive: true });
   fs.writeFileSync(lockPath, String(process.pid));
 
   try {
@@ -107,7 +116,7 @@ export async function withSessionLock(
         fs.unlinkSync(lockPath);
       }
     } catch {
-      // ignore error if already removed
+      // ignoruj, jeśli lock już usunięty
     }
   }
 }
