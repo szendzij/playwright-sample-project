@@ -30,22 +30,18 @@ test.describe('Mock API — Basic Responses (route.fulfill)', () => {
     await expect(cards[3].price).toContainText('99999.99');
   });
 
-  test('displays empty state when catalog API returns 0 items', async ({
-    page,
-    homePage,
-    mockHelper,
-  }) => {
+  test('displays empty state when catalog API returns 0 items', async ({ homePage, mockHelper }) => {
     // 1. Mock empty product response
     await mockHelper.mockEmptyProducts();
 
-    // 2. Open homepage
-    await page.goto('/');
+    // 2. Open homepage without waiting for cards (katalog ma 0 produktów)
+    await homePage.open({ waitForProducts: false });
 
     // 3. Verify that no product cards are rendered
     const count = await homePage.getProductCount();
     expect(count).toBe(0);
 
     // 4. Verify catalog container or empty state representation in DOM
-    await expect(page.locator('a.card, [data-test^="product-"]')).toHaveCount(0);
+    await expect(homePage.cardItems).toHaveCount(0);
   });
 });
