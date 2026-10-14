@@ -6,7 +6,6 @@ import { FilterSidebarComponent } from './components/filter-sidebar.component.ts
 import {
   HomePage,
   ProductDetailsPage,
-  CartPage,
   CheckoutPage,
   LoginPage,
   RegisterPage,
@@ -21,7 +20,6 @@ export type UiFixtures = {
   filterSidebar: FilterSidebarComponent;
   homePage: HomePage;
   productDetailsPage: ProductDetailsPage;
-  cartPage: CartPage;
   checkoutPage: CheckoutPage;
   loginPage: LoginPage;
   registerPage: RegisterPage;
@@ -57,10 +55,6 @@ export const test = base.extend<UiFixtures>({
 
   productDetailsPage: async ({ page }, use) => {
     await use(new ProductDetailsPage(page));
-  },
-
-  cartPage: async ({ page }, use) => {
-    await use(new CartPage(page));
   },
 
   checkoutPage: async ({ page }, use) => {
@@ -99,7 +93,6 @@ export {
 export {
   HomePage,
   ProductDetailsPage,
-  CartPage,
   CheckoutPage,
   LoginPage,
   RegisterPage,

@@ -8,7 +8,6 @@ test.describe('E2E — Cart and Checkout', () => {
     homePage,
     productDetailsPage,
     header,
-    cartPage,
     checkoutPage,
   }) => {
     // 1. Browse catalogue & open first product available in stock
@@ -22,12 +21,12 @@ test.describe('E2E — Cart and Checkout', () => {
 
     // 3. Open cart and review step 1
     await header.openCart();
-    await cartPage.waitForLoaded();
-    const itemCount = await cartPage.getItemCount();
+    await checkoutPage.waitForLoaded();
+    const itemCount = await checkoutPage.getItemCount();
     expect(itemCount).toBeGreaterThan(0);
 
     // Proceed to Step 2 (Sign in confirmation)
-    await cartPage.proceedToStep2();
+    await checkoutPage.proceedToStep2();
 
     // Proceed to Step 3 (Billing Address)
     await checkoutPage.proceedToStep3();

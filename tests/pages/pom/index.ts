@@ -1,6 +1,5 @@
 export { HomePage } from './home.page.ts';
 export { ProductDetailsPage } from './product-details.page.ts';
-export { CartPage } from './cart.page.ts';
 export { CheckoutPage, type PaymentMethod } from './checkout.page.ts';
 export { LoginPage } from './login.page.ts';
 export { RegisterPage } from './register.page.ts';
