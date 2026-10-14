@@ -18,10 +18,13 @@ test.describe('API Authentication', () => {
     expect(body.token_type?.toLowerCase()).toBe('bearer');
   });
 
-  test('login with invalid password returns 401 Unauthorized', async ({ authHelper }) => {
-    const customer = getUserByRole('customer');
+  test('login with invalid credentials returns 401 Unauthorized', async ({ authHelper }) => {
+    // Celowo NIEISTNIEJĄCE konto: serwis blokuje konto po 3 nieudanych próbach
+    // (HTTP 423, „Account locked, too many failed attempts"), a wspólne konto
+    // klienta z data/users.ts jest używane przez resztę zestawu. Zweryfikowane
+    // sondą: nieistniejące konto zwraca 401 niezależnie od liczby prób.
     const response = await authHelper.loginResponse({
-      email: customer.email,
+      email: `nonexistent_${Date.now()}@example.com`,
       password: 'InvalidPassword_999!',
     });
 
