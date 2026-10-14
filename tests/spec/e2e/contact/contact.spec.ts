@@ -1,11 +1,8 @@
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { test, expect } from '@pages/base';
 import { generateContactMessage } from '@data/test-data';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const fixtureFile = path.resolve(__dirname, '../../../../data/fixtures/sample-attachment.txt');
+const fixtureFile = path.resolve(import.meta.dirname, '../../../../data/fixtures/sample-attachment.txt');
 
 test.describe('E2E — Contact', () => {
   test('submit contact form with file attachment', async ({ contactPage }) => {
