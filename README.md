@@ -154,7 +154,7 @@ practice-software-testing-playwright/
 │   │       └── mock-test.ts          # Extended test fixture providing mockHelper
 │   ├── pages/
 │   │   ├── components/               # Header, FilterSidebar, ProductCard (scoped to root)
-│   │   ├── pom/                      # Home, Cart, Checkout, Login, Account, Admin, etc.
+│   │   ├── pom/                      # One page object per route (Home, ProductDetails, Checkout, Login, ...)
 │   │   ├── base.ts                   # Extended test fixture with auto-initialized POMs
 │   │   ├── base-component.ts         # Component base class
 │   │   └── base-page.ts              # Page base class
