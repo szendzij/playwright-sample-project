@@ -15,13 +15,13 @@ export interface RegisterCustomerPayload {
   dob?: string;
   address?: string | CustomerAddress;
   postcode?: string;
+  postal_code?: string;
   city?: string;
   state?: string;
   country?: string;
   phone?: string;
   email: string;
   password?: string;
-  [key: string]: any;
 }
 
 export interface LoginCredentials {
@@ -39,7 +39,7 @@ function formatCustomerPayload(data: RegisterCustomerPayload) {
       city: data.city || 'City',
       state: data.state || 'State',
       country: data.country || 'Country',
-      postal_code: data.postcode || (data as any).postal_code || '12345',
+      postal_code: data.postcode || data.postal_code || '12345',
     };
   }
 

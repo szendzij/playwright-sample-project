@@ -17,6 +17,13 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['**/*.ts'],
+    rules: {
+      // Fixture'y Playwright bez zależności mają postać `async ({}, use) => {}`.
+      'no-empty-pattern': ['error', { allowObjectPatternsAsParameters: true }],
+    },
+  },
+  {
     ...playwright.configs['flat/recommended'],
     files: ['tests/**/*.ts'],
   }

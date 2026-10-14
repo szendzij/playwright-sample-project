@@ -5,17 +5,35 @@ export const LOCK_POLL_INTERVAL_MS = 250;
 export const LOCK_MAX_WAIT_MS = 30_000;
 export const LOCK_STALE_MS = 60_000;
 
+interface StorageStateEntry {
+  name?: unknown;
+  value?: unknown;
+}
+
+interface StorageStateOrigin {
+  localStorage?: unknown;
+}
+
+interface StorageState {
+  origins?: unknown;
+}
+
 /** Wyciąga token z zapisanego storageState (Playwright). */
-function extractAuthToken(parsed: any): string | null {
-  if (!parsed || !Array.isArray(parsed.origins)) {
+function extractAuthToken(parsed: unknown): string | null {
+  if (typeof parsed !== 'object' || parsed === null) {
     return null;
   }
-  for (const origin of parsed.origins) {
-    if (!Array.isArray(origin.localStorage)) {
+  const { origins } = parsed as StorageState;
+  if (!Array.isArray(origins)) {
+    return null;
+  }
+  for (const origin of origins) {
+    const { localStorage } = (origin ?? {}) as StorageStateOrigin;
+    if (!Array.isArray(localStorage)) {
       continue;
     }
-    const item = origin.localStorage.find(
-      (entry: any) => entry?.name === 'auth-token' || entry?.name === 'token'
+    const item = (localStorage as StorageStateEntry[]).find(
+      (entry) => entry?.name === 'auth-token' || entry?.name === 'token'
     );
     if (item && typeof item.value === 'string') {
       return item.value;
