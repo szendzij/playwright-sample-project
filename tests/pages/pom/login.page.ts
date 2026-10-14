@@ -25,11 +25,4 @@ export class LoginPage extends BasePage {
     await this.passwordInput.fill(password);
     await this.loginSubmitButton.click();
   }
-
-  /**
-   * Returns error message text if login failed.
-   */
-  async getErrorMessage(): Promise<string> {
-    return this.visibleText(this.loginError);
-  }
 }

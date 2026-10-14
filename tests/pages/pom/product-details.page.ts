@@ -21,7 +21,7 @@ export class ProductDetailsPage extends BasePage {
    */
   override async waitForLoaded(): Promise<void> {
     await super.waitForLoaded();
-    await this.productName.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
+    await this.productName.waitFor({ state: 'visible', timeout: 15000 });
   }
 
   async addToCart(): Promise<void> {

@@ -15,9 +15,7 @@ test.describe('Mock API — Network Resilience and Error Handling (route.abort &
     await loginPage.login('user@test.com', 'Secret123!');
 
     // 3. Verify error container is displayed in the UI
-    await expect(loginPage.loginError.first()).toBeVisible();
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText.length).toBeGreaterThan(0);
+    await expect(loginPage.loginError.first()).toHaveText(/\S/);
   });
 
   test('handles HTTP 401 Unauthorized with custom error payload', async ({
@@ -36,9 +34,7 @@ test.describe('Mock API — Network Resilience and Error Handling (route.abort &
     await loginPage.login('wrong@test.com', 'wrongpassword');
 
     // 3. Verify that the UI reflects the authentication failure
-    await expect(loginPage.loginError.first()).toBeVisible();
-    const errorText = await loginPage.getErrorMessage();
-    expect(errorText.length).toBeGreaterThan(0);
+    await expect(loginPage.loginError.first()).toHaveText(/\S/);
   });
 
   test('handles dropped network connection via route.abort(failed)', async ({

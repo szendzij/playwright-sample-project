@@ -19,8 +19,6 @@ test.describe('E2E — Contact', () => {
     await contactPage.attachFile(fixtureFile);
     await contactPage.submit();
 
-    await expect(contactPage.successAlert.first()).toBeVisible({ timeout: 15000 });
-    const alertText = await contactPage.getSuccessAlert();
-    expect(alertText.length).toBeGreaterThan(0);
+    await expect(contactPage.successAlert.first()).toHaveText(/\S/, { timeout: 15000 });
   });
 });

@@ -1,34 +1,46 @@
 import { type Locator, type Page } from '@playwright/test';
 
 /**
- * Base abstract class for all Page Object Models (POM).
+ * Bazowa klasa abstrakcyjna dla wszystkich Page Object Models (POM).
+ *
+ * Konwencje (Playwright docs: /docs/pom oraz /docs/best-practices):
+ * - Lokatory są polami `readonly` inicjalizowanymi z `this.page` / `this.root`.
+ * - Priorytet selektorów: test id -> rola -> tekst -> CSS (CSS tylko z komentarzem).
+ * - Asercje NIE mieszkają w POM; POM udostępnia lokatory, test wykonuje `expect`.
  */
 export abstract class BasePage {
   constructor(protected readonly page: Page) {}
 
   /**
-   * Navigates to a path relative to the base URL or absolute URL.
+   * Nawigacja do ścieżki względnej wobec baseURL. `protected`, bo publicznym
+   * punktem wejścia każdego POM jest `open()`.
    */
-  async goto(path: string = ''): Promise<void> {
+  protected async goto(path: string = ''): Promise<void> {
     await this.page.goto(path);
   }
 
   /**
-   * Waits for the page to be in a loaded state.
-   * Can be overridden by subclasses to wait for domain-specific elements.
+   * Czeka na podstawowy stan załadowania dokumentu. Klasy pochodne nadpisują tę
+   * metodę, aby dodatkowo poczekać na własne landmarki.
+   * Czekanie MUSI być twarde (bez `.catch(() => {})`) — połknięty timeout
+   * przesuwa porażkę testu w losowe, trudne do zdiagnozowania miejsce.
    */
   async waitForLoaded(): Promise<void> {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**
-   * Zwraca przycięty tekst elementu albo '' gdy element nie jest widoczny.
+   * Czeka na widoczność lokatora i zwraca, czy element się pojawił.
+   * Używaj WYŁĄCZNIE dla elementów naprawdę opcjonalnych (np. zwijane menu),
+   * nigdy dla elementów, na których test robi asercję.
    */
-  protected async visibleText(locator: Locator): Promise<string> {
-    const first = locator.first();
-    if (!(await first.isVisible().catch(() => false))) {
-      return '';
+  protected async tryWaitForVisible(locator: Locator, timeout = 5000): Promise<boolean> {
+    try {
+      await locator.waitFor({ state: 'visible', timeout });
+      return true;
+    } catch {
+      return false;
     }
-    return ((await first.textContent()) ?? '').trim();
   }
 }
+

@@ -20,12 +20,14 @@ export class HomePage extends BasePage {
       .filter({ has: this.page.getByTestId('product-name') });
   }
 
-  /**
-   * Navigates to the Home page ('/').
-   */
-  async open(): Promise<void> {
+  async open(options: { waitForProducts?: boolean } = {}): Promise<void> {
+    const { waitForProducts = true } = options;
     await this.goto('/');
-    await this.waitForLoaded();
+    if (waitForProducts) {
+      await this.waitForLoaded();
+    } else {
+      await super.waitForLoaded();
+    }
   }
 
   /**
@@ -33,7 +35,7 @@ export class HomePage extends BasePage {
    */
   override async waitForLoaded(): Promise<void> {
     await super.waitForLoaded();
-    await this.cardItems.first().waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
+    await this.cardItems.first().waitFor({ state: 'visible', timeout: 15000 });
   }
 
   /**

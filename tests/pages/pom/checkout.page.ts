@@ -156,11 +156,4 @@ export class CheckoutPage extends BasePage {
   async confirmOrder(): Promise<void> {
     await this.finishButton.click();
   }
-
-  /**
-   * Returns order success / confirmation message text.
-   */
-  async getSuccessMessage(): Promise<string> {
-    return this.visibleText(this.orderConfirmation);
-  }
 }

@@ -80,11 +80,4 @@ export class ContactPage extends BasePage {
   async submit(): Promise<void> {
     await this.submitButton.click();
   }
-
-  /**
-   * Returns text content of the success alert banner.
-   */
-  async getSuccessAlert(): Promise<string> {
-    return this.visibleText(this.successAlert);
-  }
 }

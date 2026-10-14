@@ -85,11 +85,4 @@ export class RegisterPage extends BasePage {
 
     await this.registerSubmitButton.click();
   }
-
-  /**
-   * Returns error message text if registration failed.
-   */
-  async getErrorMessage(): Promise<string> {
-    return this.visibleText(this.registerError);
-  }
 }

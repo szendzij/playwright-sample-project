@@ -49,9 +49,7 @@ test.describe('E2E — Cart and Checkout', () => {
     await checkoutPage.confirmOrder();
 
     // Verify order success and invoice number
-    await expect(checkoutPage.orderConfirmation.first()).toBeVisible({ timeout: 15000 });
-    const successMsg = await checkoutPage.getSuccessMessage();
-    expect(successMsg.length).toBeGreaterThan(0);
+    await expect(checkoutPage.orderConfirmation.first()).toHaveText(/\S/, { timeout: 15000 });
     await expect(checkoutPage.invoiceNumberLocator.first()).toBeVisible();
   });
 });

@@ -8,11 +8,9 @@ test.describe('E2E — Authentication: Login', () => {
     await loginPage.open();
     await loginPage.login(customer.email, customer.password);
 
-    await page.waitForURL(/.*\/account/, { timeout: 5_000 });
-
+    await expect(page).toHaveURL(/.*\/account/, { timeout: 5_000 });
     await expect(header.userMenu).toBeVisible({ timeout: 5_000 });
     await expect(accountPage.pageTitle).toBeVisible({ timeout: 5_000 });
-    await expect(page).toHaveURL(/.*\/account/, { timeout: 5_000 });
   });
 
   test('login with invalid password displays error message', async ({ loginPage }) => {
@@ -21,8 +19,6 @@ test.describe('E2E — Authentication: Login', () => {
     await loginPage.open();
     await loginPage.login(customer.email, 'wrong_password_999!');
 
-    await expect(loginPage.loginError).toBeVisible();
-    const errorMessage = await loginPage.getErrorMessage();
-    expect(errorMessage.length).toBeGreaterThan(0);
+    await expect(loginPage.loginError.first()).toHaveText(/\S/);
   });
 });
