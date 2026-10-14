@@ -2,7 +2,7 @@ import { test, expect } from '@pages/base';
 import { PRODUCT_BRANDS } from '@data/products';
 
 test.describe('E2E — Catalog: Search and Filter', () => {
-  test('search products by keyword', async ({ page, homePage, header }) => {
+  test('search products by keyword', async ({ page, homePage, filterSidebar }) => {
     await homePage.open();
 
     const initialCount = await homePage.getProductCount();
@@ -13,7 +13,7 @@ test.describe('E2E — Catalog: Search and Filter', () => {
       page.waitForResponse(
         (res) => res.url().includes('/products/search') && res.status() === 200
       ),
-      header.search(keyword),
+      filterSidebar.search(keyword),
     ]);
 
     await expect(homePage.cardItems.first()).toContainText(keyword);
