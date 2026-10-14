@@ -42,14 +42,6 @@ export interface ContactMessage {
   message: string;
 }
 
-export interface PaymentDetails {
-  paymentMethod: string;
-  cardNumber: string;
-  expirationDate: string;
-  cvv: string;
-  cardHolderName: string;
-}
-
 function formatDateToIsoDateOnly(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -102,23 +94,6 @@ export function generateContactMessage(overrides?: Partial<ContactMessage>): Con
     email: faker.internet.email().toLowerCase(),
     subject: faker.helpers.arrayElement(subjects),
     message: faker.lorem.paragraph({ min: 2, max: 4 }),
-    ...overrides,
-  };
-}
-
-export const validPaymentDetails: PaymentDetails = {
-  paymentMethod: 'Credit Card',
-  cardNumber: '1111-2222-3333-4444',
-  expirationDate: '12/2028',
-  cvv: '123',
-  cardHolderName: 'Jane Doe',
-};
-
-export const paymentDetails = validPaymentDetails;
-
-export function generatePaymentDetails(overrides?: Partial<PaymentDetails>): PaymentDetails {
-  return {
-    ...validPaymentDetails,
     ...overrides,
   };
 }
