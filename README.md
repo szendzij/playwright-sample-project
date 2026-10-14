@@ -70,14 +70,22 @@ Parallel workers authenticate without encountering race conditions or redundant 
 - When a session requires re-authentication, an atomic file lock (`setup/utils/lock-helper.ts`) coordinates worker access, ensuring only one worker logs in while other workers await the fresh session state.
 
 ### 3. Page Component Object Model (PCOM)
-To prevent bloated, monolithic Page Objects, the UI architecture divides interfaces into reusable widgets and orchestrating pages:
-- **Base Primitives**: `BasePage` and `BaseComponent` handle locators, navigations, and common assertions.
+
+To prevent bloated, monolithic Page Objects, the UI architecture divides interfaces into reusable widgets and orchestrating pages, following the [Playwright Page Object Model](https://playwright.dev/docs/pom) pattern:
+- **Base Primitives**: `BasePage` (navigation + load state; `goto()` is `protected`) and `BaseComponent` (`page` + scoped `root`).
 - **Reusable Components**:
-  - `HeaderComponent`: Top navigation bar, account menus, cart badge counter.
-  - `FilterSidebarComponent`: Search input, category checkboxes, price slider, brand filters.
-  - `PaginationComponent`: Page navigation controls and dynamic item counts.
-  - `ProductCardComponent`: Scoped product card representations and interactions.
-- **Page Objects**: `HomePage`, `ProductDetailsPage`, `CartPage`, `CheckoutPage`, `LoginPage`, `RegisterPage`, `AccountPage`, `ContactPage`, `AdminDashboardPage`.
+  - `HeaderComponent`: top navigation (`root` = `app-header`); children are intentionally not scoped because the navbar renders conditionally.
+  - `FilterSidebarComponent`: catalog filter panel (`root` = `div[data-test="filters"]`) including the catalog search box.
+  - `ProductCardComponent`: product card scoped to a single card; instantiated per rendered card by `HomePage.getProductCards()`.
+- **Page Objects**: `HomePage`, `ProductDetailsPage`, `CheckoutPage`, `LoginPage`, `RegisterPage`, `AccountPage`, `ContactPage`, `AdminDashboardPage`.
+
+**Conventions enforced in this repo:**
+- One route = one page object. `CheckoutPage` owns `/checkout` (cart step included); there is no separate `CartPage`.
+- `open()` is the only public navigation entry point; `BasePage.goto()` is `protected`.
+- Locators are `readonly` class fields. Selector priority: test id (`data-test`) → role → text → CSS. CSS selectors carry a comment explaining why.
+- Page objects expose locators and user actions, never assertions. Specs verify with web-first assertions (`await expect(locator).toBeVisible()`), never `expect(await locator.isVisible()).toBe(true)`.
+- No swallowed waits: `waitFor(...).catch(() => {})` is forbidden; genuinely optional elements use `BasePage.tryWaitForVisible()`.
+- Selectors live only in `tests/pages/**`. ESLint (`no-restricted-syntax`) rejects `page.locator(...)` / `page.getBy*(...)` inside `tests/spec/**`.
 
 ### 4. Semantic Visual Regression via ARIA Snapshots
 Traditional pixel-comparison visual testing suffers from anti-aliasing variations, platform font differences, and rendering engine nuances. This suite uses **Playwright ARIA Snapshots** (`expect(locator).toMatchAriaSnapshot()`):
@@ -145,7 +153,7 @@ practice-software-testing-playwright/
 │   │       ├── mock-helper.ts        # Route interception, fetch modification & fault injection
 │   │       └── mock-test.ts          # Extended test fixture providing mockHelper
 │   ├── pages/
-│   │   ├── components/               # Header, FilterSidebar, Pagination, ProductCard
+│   │   ├── components/               # Header, FilterSidebar, ProductCard (scoped to root)
 │   │   ├── pom/                      # Home, Cart, Checkout, Login, Account, Admin, etc.
 │   │   ├── base.ts                   # Extended test fixture with auto-initialized POMs
 │   │   ├── base-component.ts         # Component base class
