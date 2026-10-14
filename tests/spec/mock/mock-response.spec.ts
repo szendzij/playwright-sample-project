@@ -22,8 +22,7 @@ test.describe('Mock API — Basic Responses (route.fulfill)', () => {
     await expect(cards[0].price).toContainText('199.99');
 
     // 5. Verify out-of-stock badge rendering
-    const secondProductOutOfStock = await cards[1].isOutOfStock();
-    expect(secondProductOutOfStock).toBe(true);
+    await expect(cards[1].outOfStockBadge).toBeVisible();
 
     // 6. Verify extreme price rendering ($99,999.99)
     await expect(cards[3].title).toContainText('Przemysłowy Robot Spawalniczy');
