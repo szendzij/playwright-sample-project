@@ -28,12 +28,13 @@ Zapisz wszystkie trzy PRZED pierwszą zmianą, z istniejącymi porażkami włąc
 |---|---|
 | `npx tsc --noEmit` | exit 0, brak wyjścia |
 | `npx eslint .` | 0 problemów (adoptowany w trakcie prac) |
-| `toolshop-api` | 10 passed |
+| `toolshop-api` | 9 passed |
 | `toolshop-mock` | 8 passed |
 | `toolshop-e2e` | 11 passed |
 
-Liczby są punktem odniesienia, nie celem — zmiana liczby testów w projekcie API (9 → 10)
-była skutkiem rozbicia jednego testu z warunkową asercją na dwa bezwarunkowe.
+Liczby są punktem odniesienia, nie celem — `toolshop-api` wahał się w obie strony:
+9 → 10 przy rozbiciu jednego testu z warunkową asercją na dwa bezwarunkowe, a potem
+10 → 9 po usunięciu testu powtarzającego pokrycie z `products.spec.ts`.
 
 ## 2. Test, który padł w baseline a potem przechodzi
 

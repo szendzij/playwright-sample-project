@@ -86,6 +86,7 @@ To prevent bloated, monolithic Page Objects, the UI architecture divides interfa
 - Page objects expose locators and user actions, never assertions. Specs verify with web-first assertions (`await expect(locator).toBeVisible()`), never `expect(await locator.isVisible()).toBe(true)`.
 - No swallowed waits: `waitFor(...).catch(() => {})` is forbidden; genuinely optional elements use `BasePage.tryWaitForVisible()`.
 - Selectors live only in `tests/pages/**`. ESLint (`no-restricted-syntax`) rejects `page.locator(...)` / `page.getBy*(...)` inside `tests/spec/**`.
+- Cross-directory imports go through `tsconfig` aliases (`@pages`, `@components`, `@data`, `@setup`, `@fixtures`); relative paths stay inside a single directory. `setup/api/assertions.ts` holds the shared paginated-product-list contract, and ESLint's `expect-expect` names it via `assertFunctionNames` so assertions inside a helper still count.
 
 ### 4. Semantic Visual Regression via ARIA Snapshots
 Traditional pixel-comparison visual testing suffers from anti-aliasing variations, platform font differences, and rendering engine nuances. This suite uses **Playwright ARIA Snapshots** (`expect(locator).toMatchAriaSnapshot()`):
