@@ -1,24 +1,16 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
-import {
-  HeaderComponent,
-  FilterSidebarComponent,
-  ProductCardComponent,
-} from '../components/index.ts';
+import { ProductCardComponent } from '../components/index.ts';
 
 export class HomePage extends BasePage {
-  readonly header: HeaderComponent;
-  readonly filterSidebar: FilterSidebarComponent;
-  readonly cardItems: Locator;
-
-  constructor(page: Page) {
-    super(page);
-    this.header = new HeaderComponent(page);
-    this.filterSidebar = new FilterSidebarComponent(page);
-    this.cardItems = this.page
-      .locator('a.card, [data-test^="product-"]')
-      .filter({ has: this.page.getByTestId('product-name') });
-  }
+  /**
+   * Karty produktów. Kontrakt: `data-test="product-<ULID>"` (testIdAttribute
+   * ustawiony w playwright.config.ts), filtrowany po obecności nazwy produktu.
+   * Bez klasy CSS `a.card` — zweryfikowane na żywym DOM, że kontrakt wystarcza.
+   */
+  readonly cardItems: Locator = this.page
+    .locator('[data-test^="product-"]')
+    .filter({ has: this.page.getByTestId('product-name') });
 
   async open(options: { waitForProducts?: boolean } = {}): Promise<void> {
     const { waitForProducts = true } = options;
@@ -30,16 +22,13 @@ export class HomePage extends BasePage {
     }
   }
 
-  /**
-   * Overridden waitForLoaded waiting for DOM and product cards visibility.
-   */
   override async waitForLoaded(): Promise<void> {
     await super.waitForLoaded();
     await this.cardItems.first().waitFor({ state: 'visible', timeout: 15000 });
   }
 
   /**
-   * Returns an array of instantiated ProductCardComponent instances currently rendered on the page.
+   * Instancje komponentów kart dla aktualnie wyrenderowanych produktów.
    */
   async getProductCards(): Promise<ProductCardComponent[]> {
     const count = await this.cardItems.count();
@@ -53,7 +42,6 @@ export class HomePage extends BasePage {
   /**
    * Pierwsza karta produktu, który nie jest oznaczony jako wyprzedany.
    * Rzuca czytelny błąd, gdy na stronie nie ma ani jednego dostępnego produktu.
-   * (Na żywym katalogu pierwsza karta bywa wyprzedana — zweryfikowane sondą.)
    */
   async getFirstInStockCard(): Promise<ProductCardComponent> {
     for (const card of await this.getProductCards()) {
