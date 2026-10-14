@@ -12,7 +12,9 @@ test.describe('API Cart', () => {
     expect(typeof cartId).toBe('string');
 
     // 2. Fetch sample product to add
-    const productsData = await productHelper.getProducts();
+    const productsResponse = await productHelper.getProductsResponse();
+    expect(productsResponse.status()).toBe(200);
+    const productsData = await productsResponse.json();
     expect(productsData.data.length).toBeGreaterThan(0);
     const targetProduct = productsData.data[0];
     const quantity = 2;
