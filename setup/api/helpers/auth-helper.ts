@@ -29,13 +29,7 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface LoginResponse {
-  access_token: string;
-  token_type: string;
-  expires_in?: number;
-}
-
-export function formatCustomerPayload(data: RegisterCustomerPayload) {
+function formatCustomerPayload(data: RegisterCustomerPayload) {
   let addressObj: CustomerAddress;
   if (typeof data.address === 'object' && data.address !== null) {
     addressObj = data.address;
@@ -69,34 +63,9 @@ export class AuthHelper {
     });
   }
 
-  async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const res = await this.loginResponse(credentials);
-    if (!res.ok()) {
-      throw new Error(`Login failed with status ${res.status()}: ${await res.text()}`);
-    }
-    return (await res.json()) as LoginResponse;
-  }
-
   async registerCustomerResponse(customerData: RegisterCustomerPayload): Promise<APIResponse> {
-    const formatted = formatCustomerPayload(customerData);
     return await this.request.post('/users/register', {
-      data: formatted,
+      data: formatCustomerPayload(customerData),
     });
   }
-
-  async registerCustomer(customerData: RegisterCustomerPayload): Promise<any> {
-    const res = await this.registerCustomerResponse(customerData);
-    if (!res.ok()) {
-      throw new Error(`Register customer failed with status ${res.status()}: ${await res.text()}`);
-    }
-    return await res.json();
-  }
-}
-
-export async function login(request: APIRequestContext, credentials: LoginCredentials): Promise<LoginResponse> {
-  return new AuthHelper(request).login(credentials);
-}
-
-export async function registerCustomer(request: APIRequestContext, customerData: RegisterCustomerPayload): Promise<any> {
-  return new AuthHelper(request).registerCustomer(customerData);
 }
