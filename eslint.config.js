@@ -33,5 +33,25 @@ export default tseslint.config(
       // HTTP QUERY) lub od danych konta. Statyczne `.skip`/`.fixme` nadal są błędem.
       'playwright/no-skipped-test': ['error', { allowConditional: true }],
     },
+  },
+  {
+    files: ['tests/spec/**/*.ts'],
+    rules: {
+      // Kontrakt POM (Playwright docs /docs/pom: "capturing element selectors in
+      // one place"). Selektory żyją w tests/pages/**; specyfikacja konsumuje POM.
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.object.name='page'][callee.property.name=/^getBy/]",
+          message:
+            'Surowy lokator page.getBy* w specyfikacji — dodaj lokator/metodę do page objectu w tests/pages.',
+        },
+        {
+          selector: "CallExpression[callee.object.name='page'][callee.property.name='locator']",
+          message:
+            'Surowy page.locator w specyfikacji — dodaj lokator do page objectu w tests/pages.',
+        },
+      ],
+    },
   }
 );
