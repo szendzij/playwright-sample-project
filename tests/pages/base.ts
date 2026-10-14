@@ -3,7 +3,6 @@ import { type UserRole } from '../../data/users.ts';
 import { ensureAuthenticatedSession } from '../../setup/utils/auth-manager.ts';
 import { HeaderComponent } from './components/header.component.ts';
 import { FilterSidebarComponent } from './components/filter-sidebar.component.ts';
-import { PaginationComponent } from './components/pagination.component.ts';
 import {
   HomePage,
   ProductDetailsPage,
@@ -20,7 +19,6 @@ export type UiFixtures = {
   userRole: UserRole;
   header: HeaderComponent;
   filterSidebar: FilterSidebarComponent;
-  pagination: PaginationComponent;
   homePage: HomePage;
   productDetailsPage: ProductDetailsPage;
   cartPage: CartPage;
@@ -51,10 +49,6 @@ export const test = base.extend<UiFixtures>({
 
   filterSidebar: async ({ page }, use) => {
     await use(new FilterSidebarComponent(page));
-  },
-
-  pagination: async ({ page }, use) => {
-    await use(new PaginationComponent(page));
   },
 
   homePage: async ({ page }, use) => {
@@ -101,7 +95,6 @@ export {
   HeaderComponent,
   FilterSidebarComponent,
   ProductCardComponent,
-  PaginationComponent,
 } from './components/index.ts';
 export {
   HomePage,

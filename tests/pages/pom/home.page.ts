@@ -3,21 +3,18 @@ import { BasePage } from '../base-page.ts';
 import {
   HeaderComponent,
   FilterSidebarComponent,
-  PaginationComponent,
   ProductCardComponent,
 } from '../components/index.ts';
 
 export class HomePage extends BasePage {
   readonly header: HeaderComponent;
   readonly filterSidebar: FilterSidebarComponent;
-  readonly pagination: PaginationComponent;
   readonly cardItems: Locator;
 
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
     this.filterSidebar = new FilterSidebarComponent(page);
-    this.pagination = new PaginationComponent(page);
     this.cardItems = this.page
       .locator('a.card, [data-test^="product-"]')
       .filter({ has: this.page.getByTestId('product-name') });
