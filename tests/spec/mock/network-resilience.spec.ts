@@ -61,7 +61,7 @@ test.describe('Mock API — Network Resilience and Error Handling (route.abort &
 
     // 5. Verify submit button still exists and page remains responsive
     await expect(loginPage.loginSubmitButton).toBeVisible();
-    expect(pageErrors.length).toBe(0);
+    expect(pageErrors).toHaveLength(0);
   });
 });
 

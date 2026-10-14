@@ -9,9 +9,6 @@ test.describe('E2E — Authentication: Login', () => {
     await loginPage.login(customer.email, customer.password);
 
     await page.waitForURL(/.*\/account/, { timeout: 5_000 });
-    if (await page.getByTestId('nav-menu').count() > 0) {
-      console.log('NAV MENU HTML:', await page.getByTestId('nav-menu').evaluate(el => el.outerHTML));
-    }
 
     await expect(header.userMenu).toBeVisible({ timeout: 5_000 });
     await expect(accountPage.pageTitle).toBeVisible({ timeout: 5_000 });

@@ -27,7 +27,7 @@ test.describe('API Products', () => {
     expect(Array.isArray(body.data)).toBe(true);
     expect(body.data.length).toBeGreaterThan(0);
 
-    const matchFound = body.data.some((product: any) =>
+    const matchFound = body.data.some((product: { name?: string; description?: string }) =>
       product.name?.toLowerCase().includes(query.toLowerCase()) ||
       product.description?.toLowerCase().includes(query.toLowerCase())
     );

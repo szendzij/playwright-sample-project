@@ -26,5 +26,12 @@ export default tseslint.config(
   {
     ...playwright.configs['flat/recommended'],
     files: ['tests/**/*.ts'],
+    rules: {
+      ...playwright.configs['flat/recommended'].rules,
+      // Zezwalamy na warunkowe `test.skip(warunek, powód)` — to idiomatyczny sposób
+      // pomijania testu zależnego od środowiska (np. brak wsparcia backendu dla
+      // HTTP QUERY) lub od danych konta. Statyczne `.skip`/`.fixme` nadal są błędem.
+      'playwright/no-skipped-test': ['error', { allowConditional: true }],
+    },
   }
 );

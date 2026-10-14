@@ -1,10 +1,7 @@
 import { test, expect } from '../../../setup/api/fixtures.ts';
 
 test.describe('API HTTP QUERY (RFC 10008)', () => {
-  test('search products using HTTP QUERY method (RFC 10008) or search fallback', async ({
-    apiGuest,
-    productHelper,
-  }) => {
+  test('search products using HTTP QUERY method (RFC 10008)', async ({ apiGuest }) => {
     // Request using HTTP QUERY method (RFC 10008)
     const queryResponse = await apiGuest.fetch('/products', {
       method: 'QUERY',
@@ -14,19 +11,21 @@ test.describe('API HTTP QUERY (RFC 10008)', () => {
       },
     });
 
-    if (queryResponse.status() === 200) {
-      const body = await queryResponse.json();
-      expect(Array.isArray(body.data)).toBe(true);
-      expect(body.data.length).toBeGreaterThan(0);
-      expect(body).toHaveProperty('current_page');
-    } else {
-      // Fallback to standard search endpoint when QUERY is not supported
-      const fallbackResponse = await productHelper.searchProductsResponse('Hammer');
-      expect(fallbackResponse.status()).toBe(200);
+    test.skip(queryResponse.status() !== 200, 'Backend nie wspiera jeszcze HTTP QUERY (RFC 10008)');
 
-      const fallbackBody = await fallbackResponse.json();
-      expect(Array.isArray(fallbackBody.data)).toBe(true);
-      expect(fallbackBody.data.length).toBeGreaterThan(0);
-    }
+    const body = await queryResponse.json();
+    expect(Array.isArray(body.data)).toBe(true);
+    expect(body.data.length).toBeGreaterThan(0);
+    expect(body).toHaveProperty('current_page');
+  });
+
+  test('search products falls back to the standard search endpoint', async ({ productHelper }) => {
+    const response = await productHelper.searchProductsResponse('Hammer');
+    expect(response.status()).toBe(200);
+
+    const body = await response.json();
+    expect(Array.isArray(body.data)).toBe(true);
+    expect(body.data.length).toBeGreaterThan(0);
+    expect(body).toHaveProperty('current_page');
   });
 });

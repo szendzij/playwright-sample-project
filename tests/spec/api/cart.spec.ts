@@ -32,7 +32,9 @@ test.describe('API Cart', () => {
     expect(Array.isArray(cartDetails.cart_items)).toBe(true);
     expect(cartDetails.cart_items.length).toBeGreaterThanOrEqual(1);
 
-    const item = cartDetails.cart_items.find((ci: any) => ci.product_id === targetProduct.id);
+    const item = cartDetails.cart_items.find(
+      (ci: { product_id: string; quantity: number }) => ci.product_id === targetProduct.id
+    );
     expect(item).toBeDefined();
     expect(item.quantity).toBe(quantity);
   });
