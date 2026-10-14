@@ -1,5 +1,5 @@
 import { test as base, expect, request, type APIRequestContext } from '@playwright/test';
-import { getUserByRole } from '../../data/users.ts';
+import { resolveApiUrl, fetchAccessToken } from '../utils/api-login.ts';
 import { AuthHelper } from './helpers/auth-helper.ts';
 import { ProductHelper } from './helpers/product-helper.ts';
 import { CartHelper } from './helpers/cart-helper.ts';
@@ -21,41 +21,23 @@ export type ApiTestFixtures = {
 export const test = base.extend<ApiTestFixtures, ApiWorkerFixtures>({
   tokenCache: [
     async ({}, use) => {
-      const cache = new Map<string, string>();
-      await use(cache);
+      await use(new Map<string, string>());
     },
     { scope: 'worker' },
   ],
 
-  apiAs: async ({ baseURL, tokenCache }, use) => {
+  apiAs: async ({ tokenCache }, use) => {
     const contexts: APIRequestContext[] = [];
-    const baseApiUrl = process.env.API_URL || baseURL || 'https://api.practicesoftwaretesting.com';
 
     const factory = async (role: 'admin' | 'customer'): Promise<APIRequestContext> => {
       let token = tokenCache.get(role);
       if (!token) {
-        const user = getUserByRole(role);
-        const loginCtx = await request.newContext({ baseURL: baseApiUrl });
-        try {
-          const res = await loginCtx.post('/users/login', {
-            data: {
-              email: user.email,
-              password: user.password,
-            },
-          });
-          if (!res.ok()) {
-            throw new Error(`Login failed for role "${role}": ${res.status()} ${await res.text()}`);
-          }
-          const data = await res.json();
-          token = data.access_token as string;
-          tokenCache.set(role, token);
-        } finally {
-          await loginCtx.dispose();
-        }
+        token = await fetchAccessToken(resolveApiUrl(), role);
+        tokenCache.set(role, token);
       }
 
       const authCtx = await request.newContext({
-        baseURL: baseApiUrl,
+        baseURL: resolveApiUrl(),
         extraHTTPHeaders: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/json',
@@ -73,10 +55,9 @@ export const test = base.extend<ApiTestFixtures, ApiWorkerFixtures>({
     }
   },
 
-  apiGuest: async ({ baseURL }, use) => {
-    const baseApiUrl = process.env.API_URL || baseURL || 'https://api.practicesoftwaretesting.com';
+  apiGuest: async ({}, use) => {
     const ctx = await request.newContext({
-      baseURL: baseApiUrl,
+      baseURL: resolveApiUrl(),
       extraHTTPHeaders: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -98,13 +79,10 @@ export const test = base.extend<ApiTestFixtures, ApiWorkerFixtures>({
     await use(new CartHelper(apiGuest));
   },
 
-  invoiceHelper: async ({ apiGuest }, use) => {
-    await use(new InvoiceHelper(apiGuest));
+  invoiceHelper: async ({ apiAs }, use) => {
+    const adminApi = await apiAs('admin');
+    await use(new InvoiceHelper(adminApi));
   },
 });
 
 export { expect, request, type APIRequestContext };
-export { AuthHelper } from './helpers/auth-helper.ts';
-export { ProductHelper } from './helpers/product-helper.ts';
-export { CartHelper } from './helpers/cart-helper.ts';
-export { InvoiceHelper } from './helpers/invoice-helper.ts';

@@ -1,9 +1,8 @@
 import { test, expect } from '../../../setup/api/fixtures.ts';
 
 test.describe('API Invoices', () => {
-  test('retrieve invoice list for logged-in user', async ({ apiAs, invoiceHelper }) => {
-    const adminApi = await apiAs('admin');
-    const response = await invoiceHelper.getInvoicesResponse(adminApi);
+  test('retrieve invoice list for logged-in user', async ({ invoiceHelper }) => {
+    const response = await invoiceHelper.getInvoicesResponse();
 
     expect(response.status()).toBe(200);
 
@@ -17,7 +16,7 @@ test.describe('API Invoices', () => {
       expect(firstInvoice).toHaveProperty('invoice_number');
 
       // Verify PDF status endpoint for existing invoice
-      const pdfStatusRes = await invoiceHelper.checkPdfStatusResponse(adminApi, firstInvoice.id);
+      const pdfStatusRes = await invoiceHelper.checkPdfStatusResponse(firstInvoice.id);
       expect([200, 400]).toContain(pdfStatusRes.status());
     }
   });
