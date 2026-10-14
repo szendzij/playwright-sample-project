@@ -5,6 +5,14 @@ export const LOCK_POLL_INTERVAL_MS = 250;
 export const LOCK_MAX_WAIT_MS = 30_000;
 export const LOCK_STALE_MS = 60_000;
 
+/**
+ * Zapas, o jaki token w cache musi jeszcze żyć, żeby uznać sesję za ważną.
+ * Tokeny serwisu mają TTL 300 s (`expires_in: 300`), a pełny przebieg e2e trwa
+ * dziesiątki sekund — przy zapasie mniejszym niż czas przebiegu test startuje
+ * z tokenem, który umiera w trakcie, i aplikacja przełącza się na widok gościa.
+ */
+export const SESSION_EXPIRY_MARGIN_S = 120;
+
 interface StorageStateEntry {
   name?: unknown;
   value?: unknown;
@@ -59,7 +67,7 @@ function decodeJwtPayload(token: string): { exp?: number } | null {
 
 /**
  * Sesja jest ważna, jeśli plik istnieje, parsuje się do obiektu,
- * zawiera token i token nie wygasł (z zapasem 30 s).
+ * zawiera token i token nie wygasł (z zapasem `SESSION_EXPIRY_MARGIN_S`).
  */
 export function isSessionValid(sessionPath: string): boolean {
   try {
@@ -82,7 +90,7 @@ export function isSessionValid(sessionPath: string): boolean {
     if (!payload) {
       return false;
     }
-    return !payload.exp || Date.now() / 1000 < payload.exp - 30;
+    return !payload.exp || Date.now() / 1000 < payload.exp - SESSION_EXPIRY_MARGIN_S;
   } catch {
     return false;
   }
