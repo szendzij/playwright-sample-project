@@ -13,6 +13,13 @@ export class CheckoutPage extends BasePage {
   // Step 1 proceed
   readonly proceed1Button: Locator = this.page.getByTestId('proceed-1');
 
+  /**
+   * Wiersze tabeli pozycji w kroku 1 (koszyk).
+   * CSS bezklasawo: serwis nie wystawia tam stabilnego `data-test` na `<tr>`.
+   * Zweryfikowane na żywym DOM: 1 pozycja = 1 wiersz.
+   */
+  readonly cartItems: Locator = this.page.locator('table tbody tr');
+
   // Step 2 proceed (Sign-in confirmation)
   readonly proceed2Button: Locator = this.page.getByTestId('proceed-2');
 
@@ -37,12 +44,15 @@ export class CheckoutPage extends BasePage {
   readonly finishButton: Locator = this.page.getByTestId('finish');
 
   // Order confirmation
-  readonly orderConfirmation: Locator = this.page.locator(
-    '#order-confirmation, [data-test="order-confirmation"], .alert-success, div.help-block'
-  );
-  readonly invoiceNumberLocator: Locator = this.page.locator(
-    '[data-test="invoice-number"], #order-confirmation, .alert-success'
-  );
+  // Potwierdzenie zamówienia: test id jest kontraktem, fallbacki zostają dla
+  // markupu bez `data-test` (zweryfikowane: `payment-success-message` pojawia się
+  // dopiero po `finish`).
+  readonly orderConfirmation: Locator = this.page
+    .getByTestId('payment-success-message')
+    .or(this.page.locator('#order-confirmation, [data-test="order-confirmation"], .alert-success, div.help-block'));
+  readonly invoiceNumberLocator: Locator = this.page
+    .getByTestId('payment-success-message')
+    .or(this.page.locator('[data-test="invoice-number"], #order-confirmation, .alert-success'));
 
   /**
    * Navigates to the checkout page.
@@ -50,6 +60,22 @@ export class CheckoutPage extends BasePage {
   async open(): Promise<void> {
     await this.goto('/checkout');
     await this.waitForLoaded();
+  }
+
+  /**
+   * Nadpisanie: /checkout renderuje stepper asynchronicznie po zmianie URL.
+   * Bez czekania na `proceed-1` liczenie wierszy koszyka zwracałoby 0.
+   */
+  override async waitForLoaded(): Promise<void> {
+    await super.waitForLoaded();
+    await this.proceed1Button.waitFor({ state: 'visible', timeout: 15000 });
+  }
+
+  /**
+   * Liczba pozycji w kroku 1 (koszyk).
+   */
+  async getItemCount(): Promise<number> {
+    return await this.cartItems.count();
   }
 
   /**

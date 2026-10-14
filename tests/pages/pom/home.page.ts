@@ -48,6 +48,20 @@ export class HomePage extends BasePage {
     return cards;
   }
 
+  /**
+   * Pierwsza karta produktu, który nie jest oznaczony jako wyprzedany.
+   * Rzuca czytelny błąd, gdy na stronie nie ma ani jednego dostępnego produktu.
+   * (Na żywym katalogu pierwsza karta bywa wyprzedana — zweryfikowane sondą.)
+   */
+  async getFirstInStockCard(): Promise<ProductCardComponent> {
+    for (const card of await this.getProductCards()) {
+      if (!(await card.isOutOfStock())) {
+        return card;
+      }
+    }
+    throw new Error('Brak dostępnego (nie-wyprzedanego) produktu na stronie katalogu');
+  }
+
   async getProductCount(): Promise<number> {
     return await this.cardItems.count();
   }

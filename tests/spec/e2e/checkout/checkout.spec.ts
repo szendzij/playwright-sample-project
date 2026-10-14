@@ -11,11 +11,10 @@ test.describe('E2E — Cart and Checkout', () => {
     cartPage,
     checkoutPage,
   }) => {
-    // 1. Browse catalogue & open first product
+    // 1. Browse catalogue & open first product available in stock
     await homePage.open();
-    const cards = await homePage.getProductCards();
-    expect(cards.length).toBeGreaterThan(0);
-    await cards[0].openDetails();
+    const card = await homePage.getFirstInStockCard();
+    await card.openDetails();
 
     // 2. Product details & add to cart
     await productDetailsPage.waitForLoaded();
