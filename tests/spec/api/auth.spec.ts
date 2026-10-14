@@ -1,5 +1,5 @@
-import { test, expect } from '../../../setup/api/fixtures.ts';
-import { getUserByRole } from '../../../data/users.ts';
+import { test, expect } from '@setup/api/fixtures';
+import { getUserByRole } from '@data/users';
 import { generateCustomerData } from '@data/test-data';
 
 test.describe('API Authentication', () => {

@@ -1,6 +1,6 @@
 import { type Locator } from '@playwright/test';
 import { BasePage } from '../base-page.ts';
-import { type CheckoutAddress } from '../../../data/test-data.ts';
+import { type CheckoutAddress } from '@data/test-data';
 
 export type PaymentMethod =
   | 'cash-on-delivery'

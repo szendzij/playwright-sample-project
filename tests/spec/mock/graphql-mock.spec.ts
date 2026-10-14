@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/mock/mock-test.ts';
+import { test, expect } from '@fixtures/mock/mock-test';
 
 test.describe('Mock API — GraphQL Operation Mocking (POST /graphql)', () => {
   test('selectively mocks GraphQL query based on operationName', async ({

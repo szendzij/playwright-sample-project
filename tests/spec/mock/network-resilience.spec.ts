@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/mock/mock-test.ts';
+import { test, expect } from '@fixtures/mock/mock-test';
 
 test.describe('Mock API — Network Resilience and Error Handling (route.abort & status codes)', () => {
   // Ten sam przebieg UI dla różnych odpowiedzi serwera — parametryzacja zamiast

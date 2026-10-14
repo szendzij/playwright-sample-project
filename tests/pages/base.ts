@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
-import { type UserRole } from '../../data/users.ts';
-import { ensureAuthenticatedSession } from '../../setup/utils/auth-manager.ts';
+import { type UserRole } from '@data/users';
+import { ensureAuthenticatedSession } from '@setup/utils/auth-manager';
 import { HeaderComponent } from './components/header.component.ts';
 import { FilterSidebarComponent } from './components/filter-sidebar.component.ts';
 import {

@@ -1,4 +1,4 @@
-import { test, expect } from '../../../setup/api/fixtures.ts';
+import { test, expect } from '@setup/api/fixtures';
 
 test.describe('API Invoices', () => {
   test('retrieve invoice list for logged-in user', async ({ invoiceHelper }) => {

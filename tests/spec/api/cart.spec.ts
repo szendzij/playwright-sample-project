@@ -1,4 +1,4 @@
-import { test, expect } from '../../../setup/api/fixtures.ts';
+import { test, expect } from '@setup/api/fixtures';
 
 test.describe('API Cart', () => {
   test('create cart and add product', async ({ cartHelper, productHelper }) => {

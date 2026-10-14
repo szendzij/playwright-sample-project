@@ -1,5 +1,5 @@
-import { test, expect } from '../../../setup/api/fixtures.ts';
-import { expectProductListResponse } from '../../../setup/api/assertions.ts';
+import { test, expect } from '@setup/api/fixtures';
+import { expectProductListResponse } from '@setup/api/assertions';
 
 test.describe('API Products', () => {
   test('retrieve product list with pagination', async ({ productHelper }) => {

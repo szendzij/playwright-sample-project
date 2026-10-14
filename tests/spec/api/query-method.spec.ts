@@ -1,5 +1,5 @@
-import { test } from '../../../setup/api/fixtures.ts';
-import { expectProductListResponse } from '../../../setup/api/assertions.ts';
+import { test } from '@setup/api/fixtures';
+import { expectProductListResponse } from '@setup/api/assertions';
 
 test.describe('API HTTP QUERY (RFC 10008)', () => {
   test('search products using HTTP QUERY method (RFC 10008)', async ({ apiGuest }) => {

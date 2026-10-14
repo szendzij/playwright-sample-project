@@ -9,6 +9,7 @@
       "@pages/*": ["./tests/pages/*", "./tests/pages/*.ts"],
       "@components/*": ["./tests/pages/components/*", "./tests/pages/components/*.ts"],
       "@data/*": ["./data/*", "./data/*.ts"],
+      "@setup/*": ["./setup/*", "./setup/*.ts"],
       "@fixtures/*": ["./tests/fixtures/*", "./tests/fixtures/*.ts"]
     },
     "esModuleInterop": true,
