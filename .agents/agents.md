@@ -68,3 +68,45 @@ npm run report
 - **Dokumentacja bibliotek**: W razie pytań o składnię lub nowości Playwright, sprawdzaj aktualną dokumentację narzędziem `ctx7` (`npx ctx7@latest`).
 - **Weryfikacja**: Po wprowadzeniu zmian w testach uruchom odpowiedni zestaw (np. `npx playwright test tests/spec/...`) przed zakończeniem zadania.
 - **Git**: Commity, staging i odczyty gita wykonuj automatycznie; **nigdy nie wykonuj `git push`** bez bezpośredniej prośby użytkownika.
+
+---
+
+## 5. Dyscyplina weryfikacji
+
+Obowiązuje w każdym zadaniu zmieniającym kod. Pełna reguła:
+`.agents/rules/local-verification-discipline.md`.
+
+- **Baseline przed, bramki po.** Uruchom i zapisz realne wyjście każdej bramki PRZED
+  pierwszą zmianą — z istniejącymi porażkami włącznie. Bramka zepsuta już wcześniej jest
+  raportowana jako stan zastany, nigdy jako „zweryfikowana".
+- **`npx tsc --noEmit` na całym projekcie jest jedynym wiarygodnym type-checkiem.**
+  Narzędzie edycyjne pomija type-check per plik przy wykrytym `tsconfig.json` (nie
+  rozwiąże aliasów ani globali) — brak błędu przy edycji pojedynczego pliku NIE jest
+  zaliczoną bramką.
+- **Każdy projekt testowy osobno**: `toolshop-api`, `toolshop-mock`, `toolshop-e2e`.
+  Jedna zagregowana liczba ukrywa, który projekt się zepsuł.
+- **Bramka czerwona w baseline i zielona po zmianie była flaky** — powiedz to wprost,
+  nie przypisuj sobie naprawy. Dotyczy to m.in. `tests/spec/mock/intercept-modify.spec.ts`,
+  który uderza do prawdziwego, zdalnego API.
+- **Nie osłabiaj asercji, żeby zadowolić linter.** Pusta asercja jest gorsza niż czerwona
+  bramka. Zanim wyłączysz regułę, sprawdź jej schemat — często ma opcję na znany
+  fałszywy traf frameworka.
+- **Liczby lintera licz per obszar** i wykluczaj `.agents/` (196 plików `.js`
+  wendorowanego toolingu generuje ponad 2700 problemów i zagłusza wszystko inne).
+
+---
+
+## 6. Upraszczanie kodu (KISS)
+
+Gdy zadanie brzmi „uprość katalog X", „co tu można uprościć" albo „lecimy z KISS":
+
+- **Skill**: `.agents/skills/codebase-simplification/SKILL.md` — procedura, pułapki,
+  pliki wsparcia (playbook z realnymi przebiegami, recepty bramek).
+- **Komenda**: `.agents/workflows/simplify-area.md` — pełny przebieg od baseline do raportu.
+- **Narzędzie**: `.agents/scripts/local/find-dead-members.py` — analiza osiągalności
+  (raport domyślnie, `--rewrite` usuwa z ochroną kotwic).
+
+Zasada nadrzędna: **kompilator jest orakulum**. Jeśli po usunięciu składowej projekt się
+kompiluje, nic jej nie referencjonowało. Usuwanie martwego kodu w osobnym commicie od
+zmian strukturalnych; duże cięcie publicznego/demonstracyjnego API to decyzja użytkownika,
+nie rutyna.
