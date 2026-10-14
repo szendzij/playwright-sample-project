@@ -34,14 +34,6 @@ export class CheckoutPage extends BasePage {
 
   // Step 4 Payment inputs
   readonly paymentMethodSelect: Locator = this.page.getByTestId('payment-method');
-  readonly accountNameInput: Locator = this.page.getByTestId('account-name');
-  readonly accountNumberInput: Locator = this.page.getByTestId('account-number');
-  readonly creditCardNumberInput: Locator = this.page
-    .getByTestId('credit-card-number')
-    .or(this.page.getByTestId('card-number'));
-  readonly expirationDateInput: Locator = this.page.getByTestId('expiration-date');
-  readonly cvvInput: Locator = this.page.getByTestId('cvv');
-  readonly cardHolderNameInput: Locator = this.page.getByTestId('card-holder-name');
   readonly finishButton: Locator = this.page.getByTestId('finish');
 
   // Order confirmation
@@ -139,35 +131,6 @@ export class CheckoutPage extends BasePage {
     }
   }
 
-  /**
-   * Fills payment details depending on selected payment method.
-   */
-  async fillPaymentDetails(
-    details: Partial<PaymentDetails> & { accountName?: string; accountNumber?: string }
-  ): Promise<void> {
-    if (details.accountName && (await this.accountNameInput.isVisible())) {
-      await this.accountNameInput.fill(details.accountName);
-    }
-    if (details.accountNumber && (await this.accountNumberInput.isVisible())) {
-      await this.accountNumberInput.fill(details.accountNumber);
-    }
-    if (details.cardNumber && (await this.creditCardNumberInput.isVisible())) {
-      await this.creditCardNumberInput.fill(details.cardNumber);
-    }
-    if (details.expirationDate && (await this.expirationDateInput.isVisible())) {
-      await this.expirationDateInput.fill(details.expirationDate);
-    }
-    if (details.cvv && (await this.cvvInput.isVisible())) {
-      await this.cvvInput.fill(details.cvv);
-    }
-    if (details.cardHolderName && (await this.cardHolderNameInput.isVisible())) {
-      await this.cardHolderNameInput.fill(details.cardHolderName);
-    }
-  }
-
-  /**
-   * Submits the order by clicking the finish button.
-   */
   async confirmOrder(): Promise<void> {
     await this.finishButton.click();
   }
@@ -182,18 +145,5 @@ export class CheckoutPage extends BasePage {
     }
     const text = await this.orderConfirmation.first().textContent();
     return text ? text.trim() : '';
-  }
-
-  /**
-   * Extracts invoice / order number from confirmation text if available.
-   */
-  async getInvoiceNumber(): Promise<string> {
-    const text = await this.getSuccessMessage();
-    if (!text) {
-      return '';
-    }
-    // Pattern: INVOICE-XXX or #1234 or alphanumeric code
-    const match = text.match(/(?:INV-|invoice\s*#?|order\s*#?)([A-Za-z0-9_-]+)/i);
-    return match ? match[1] : '';
   }
 }

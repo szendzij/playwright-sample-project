@@ -51,29 +51,6 @@ export class HomePage extends BasePage {
     return cards;
   }
 
-  /**
-   * Finds a product card by name and clicks it to open the details view.
-   */
-  async openProductByName(name: string): Promise<void> {
-    const cardByName = this.cardItems
-      .filter({
-        has: this.page.getByTestId('product-name').filter({ hasText: new RegExp(`^\\s*${name}\\s*$`, 'i') }),
-      })
-      .first();
-
-    if (await cardByName.isVisible().catch(() => false)) {
-      await cardByName.click();
-      return;
-    }
-
-    // Fallback: search by partial text
-    const fallbackCard = this.cardItems.filter({ hasText: name }).first();
-    await fallbackCard.click();
-  }
-
-  /**
-   * Returns the count of product cards displayed on the home page.
-   */
   async getProductCount(): Promise<number> {
     return await this.cardItems.count();
   }

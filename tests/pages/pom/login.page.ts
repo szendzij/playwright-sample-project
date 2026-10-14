@@ -8,10 +8,6 @@ export class LoginPage extends BasePage {
   readonly loginError: Locator = this.page
     .getByTestId('login-error')
     .or(this.page.locator('.alert-danger, [data-test="login-error"]'));
-  readonly registerLink: Locator = this.page
-    .getByTestId('register-link')
-    .or(this.page.locator('a[href*="/auth/register"]'));
-
   constructor(page: Page) {
     super(page);
   }
@@ -43,12 +39,5 @@ export class LoginPage extends BasePage {
     }
     const text = await this.loginError.first().textContent();
     return text ? text.trim() : '';
-  }
-
-  /**
-   * Clicks register link to navigate to registration page.
-   */
-  async goToRegister(): Promise<void> {
-    await this.registerLink.first().click();
   }
 }

@@ -25,9 +25,6 @@ export class ContactPage extends BasePage {
   readonly submitButton: Locator = this.page.getByTestId('contact-submit');
   readonly successAlert: Locator = this.page
     .locator('div.alert-success, [data-test="alert-success"], .alert-success');
-  readonly errorAlert: Locator = this.page
-    .locator('div.alert-danger, [data-test="alert-danger"], .alert-danger');
-
   constructor(page: Page) {
     super(page);
   }

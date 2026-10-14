@@ -18,21 +18,6 @@ export class ProductCardComponent extends BaseComponent {
     return text ? text.trim() : '';
   }
 
-  /**
-   * Returns the numerical price value (parsed from text like "$14.15").
-   */
-  async getPrice(): Promise<number> {
-    const text = await this.price.textContent();
-    if (!text) {
-      return 0;
-    }
-    const numeric = text.replace(/[^0-9.]/g, '');
-    return parseFloat(numeric) || 0;
-  }
-
-  /**
-   * Clicks on the card to navigate to the product details page.
-   */
   async openDetails(): Promise<void> {
     await this.root.click();
   }
