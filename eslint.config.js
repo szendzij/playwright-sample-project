@@ -29,9 +29,16 @@ export default tseslint.config(
     rules: {
       ...playwright.configs['flat/recommended'].rules,
       // Zezwalamy na warunkowe `test.skip(warunek, powód)` — to idiomatyczny sposób
-      // pomijania testu zależnego od środowiska (np. brak wsparcia backendu dla
-      // HTTP QUERY) lub od danych konta. Statyczne `.skip`/`.fixme` nadal są błędem.
+      // pomijania testu zależnego od środowiska lub od danych konta (np. brak faktur
+      // na koncie testowym). Statyczne `.skip`/`.fixme` nadal są błędem.
       'playwright/no-skipped-test': ['error', { allowConditional: true }],
+      // Asercje mogą żyć w nazwanej funkcji pomocniczej (np. wspólny kontrakt
+      // paginowanej listy w setup/api/assertions.ts) — reguła musi ją rozpoznać,
+      // inaczej zgłasza „Test has no assertions" dla poprawnego testu.
+      'playwright/expect-expect': [
+        'warn',
+        { assertFunctionNames: ['expect', 'expectProductListResponse'] },
+      ],
     },
   },
   {

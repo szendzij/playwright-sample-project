@@ -1,13 +1,10 @@
 import { test, expect } from '../../../setup/api/fixtures.ts';
+import { expectProductListResponse } from '../../../setup/api/assertions.ts';
 
 test.describe('API Products', () => {
   test('retrieve product list with pagination', async ({ productHelper }) => {
     const response = await productHelper.getProductsResponse({ page: 1 });
-    expect(response.status()).toBe(200);
-
-    const body = await response.json();
-    expect(Array.isArray(body.data)).toBe(true);
-    expect(body.data.length).toBeGreaterThan(0);
+    const body = await expectProductListResponse(response);
     expect(body.current_page).toBe(1);
     expect(body).toHaveProperty('total');
     expect(body).toHaveProperty('per_page');
@@ -21,15 +18,11 @@ test.describe('API Products', () => {
   test('search product by phrase Drill', async ({ productHelper }) => {
     const query = 'Drill';
     const response = await productHelper.searchProductsResponse(query);
-    expect(response.status()).toBe(200);
+    const body = await expectProductListResponse(response);
 
-    const body = await response.json();
-    expect(Array.isArray(body.data)).toBe(true);
-    expect(body.data.length).toBeGreaterThan(0);
-
-    const matchFound = body.data.some((product: { name?: string; description?: string }) =>
-      product.name?.toLowerCase().includes(query.toLowerCase()) ||
-      product.description?.toLowerCase().includes(query.toLowerCase())
+    const matchFound = body.data.some((product) =>
+      String(product.name ?? '').toLowerCase().includes(query.toLowerCase()) ||
+      String(product.description ?? '').toLowerCase().includes(query.toLowerCase())
     );
     expect(matchFound).toBe(true);
   });
